@@ -1,0 +1,2681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SS Event Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root {
+  --bg: #111113;
+  --bg2: #18181B;
+  --bg3: #1F1F23;
+  --panel: #252529;
+  --panel2: #2C2C31;
+  --gold: #E8E4DC;
+  --gold2: #F5F0E6;
+  --gold3: #9A9A9A;
+  --cream: #F5F0E6;
+  --muted: #7A7A85;
+  --text: #E8E4DC;
+  --accent: #A8A8B3;
+  --rose: #B8A098;
+  --teal: #8AABA8;
+  --danger: #B85C5C;
+  --success: #6EA882;
+  --border: rgba(232,228,220,0.10);
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gold3); border-radius: 4px; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 240px;
+  min-width: 240px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.sidebar-logo {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+}
+.sidebar-logo span {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.sidebar-section {
+  padding: 16px 12px 4px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  margin: 2px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+  border: 1px solid transparent;
+  position: relative;
+}
+.nav-item:hover { background: var(--panel); color: var(--text); }
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(232,228,220,0.08), rgba(232,228,220,0.03));
+  color: var(--gold);
+  border-color: var(--border);
+  font-weight: 500;
+}
+.nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--gold);
+  color: var(--bg);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 99px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
+.event-selector {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.event-selector:hover { border-color: var(--gold); }
+.event-selector .es-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.event-selector .es-name { font-size: 14px; color: var(--cream); font-weight: 500; margin-top: 2px; }
+.event-selector .es-date { font-size: 12px; color: var(--gold); margin-top: 1px; }
+
+/* ===== MAIN ===== */
+.main {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 9;
+}
+.topbar h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--cream);
+}
+.topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+.btn-gold {
+  background: linear-gradient(135deg, #D8D4CC, #888888);
+  color: var(--bg);
+  font-weight: 600;
+}
+.btn-gold:hover { background: linear-gradient(135deg, #F5F0E6, #D8D4CC); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(232,228,220,0.18); }
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--panel); color: var(--text); border-color: rgba(232,228,220,0.18); }
+.btn-danger { background: rgba(184,92,92,0.15); color: var(--danger); border: 1px solid rgba(184,92,92,0.3); }
+.btn-danger:hover { background: rgba(184,92,92,0.25); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* ===== PAGE CONTENT ===== */
+.page { display: none; flex: 1; padding: 28px; animation: fadeIn 0.3s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== GRID CARDS ===== */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent-color, var(--gold));
+}
+.stat-card .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 8px; }
+.stat-card .stat-val { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--cream); }
+.stat-card .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.stat-card .stat-icon { position: absolute; top: 20px; right: 20px; font-size: 28px; opacity: 0.15; }
+
+/* ===== SECTION BLOCKS ===== */
+.section-block {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.section-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.section-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  color: var(--cream);
+  font-weight: 600;
+}
+.section-body { padding: 22px; }
+
+/* ===== TABLES ===== */
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); padding: 0 14px 12px; font-weight: 600; }
+td { padding: 13px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(201,168,76,0.03); }
+
+/* ===== BADGES ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.badge-confirmed { background: rgba(110,168,130,0.15); color: var(--success); border: 1px solid rgba(110,168,130,0.3); }
+.badge-pending { background: rgba(232,228,220,0.10); color: var(--gold); border: 1px solid rgba(232,228,220,0.18); }
+.badge-declined { background: rgba(184,92,92,0.15); color: var(--danger); border: 1px solid rgba(184,92,92,0.3); }
+.badge-paid { background: rgba(110,168,130,0.15); color: var(--success); border: 1px solid rgba(110,168,130,0.3); }
+.badge-unpaid { background: rgba(184,92,92,0.15); color: var(--danger); border: 1px solid rgba(184,92,92,0.3); }
+.badge-partial { background: rgba(168,168,179,0.12); color: var(--accent); border: 1px solid rgba(168,168,179,0.22); }
+.badge-done { background: rgba(110,168,130,0.15); color: var(--success); border: 1px solid rgba(110,168,130,0.3); }
+.badge-inprog { background: rgba(138,171,168,0.12); color: var(--teal); border: 1px solid rgba(138,171,168,0.22); }
+.badge-todo { background: rgba(122,122,133,0.15); color: var(--muted); border: 1px solid rgba(122,122,133,0.3); }
+
+/* ===== FORM STYLES ===== */
+.form-row { display: grid; gap: 14px; margin-bottom: 14px; }
+.form-row.cols-2 { grid-template-columns: 1fr 1fr; }
+.form-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
+input, select, textarea {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  transition: border-color 0.2s;
+  outline: none;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(232,228,220,0.06); }
+textarea { resize: vertical; min-height: 80px; }
+select option { background: var(--bg3); }
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  width: 520px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes modalIn { from { transform: scale(0.92) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+.modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: var(--cream);
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+/* ===== PROGRESS BARS ===== */
+.progress-bar-wrap { background: var(--bg3); border-radius: 99px; height: 8px; overflow: hidden; }
+.progress-bar { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+
+/* ===== BUDGET SECTION ===== */
+.budget-overview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.budget-card {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+}
+.budget-card .bc-amt { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--cream); }
+.budget-card .bc-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-top: 4px; }
+.budget-card .bc-sub { font-size: 12px; color: var(--gold); margin-top: 2px; }
+
+.cat-budget-item { margin-bottom: 16px; }
+.cat-budget-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.cat-budget-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.cat-budget-nums { font-size: 12px; color: var(--muted); }
+
+/* ===== CHECKLIST ===== */
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px;
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  transition: all 0.2s;
+}
+.task-item:hover { border-color: var(--border); }
+.task-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--muted);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: transparent;
+}
+.task-checkbox.checked { background: var(--gold); border-color: var(--gold); color: var(--bg); }
+.task-name { flex: 1; font-size: 13px; }
+.task-name.done { text-decoration: line-through; color: var(--muted); }
+.task-assignee { font-size: 11px; color: var(--accent); background: rgba(168,168,179,0.08); padding: 3px 9px; border-radius: 99px; }
+.task-due { font-size: 11px; color: var(--muted); }
+
+/* ===== RSVP / INVITE ===== */
+.invite-card {
+  background: linear-gradient(135deg, #161618, #1E1E22);
+  border: 1px solid rgba(232,228,220,0.18);
+  border-radius: var(--radius);
+  padding: 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.invite-card::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(232,228,220,0.06), transparent 70%);
+  border-radius: 50%;
+}
+.invite-event-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.invite-event-sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+.invite-details { display: flex; justify-content: center; gap: 24px; margin-bottom: 20px; }
+.invite-detail { text-align: center; }
+.invite-detail .id-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); }
+.invite-detail .id-val { font-size: 15px; color: var(--cream); font-weight: 500; margin-top: 2px; }
+#qr-container { display: flex; justify-content: center; margin: 16px 0; }
+#qr-container canvas, #qr-container img { border-radius: 8px; border: 3px solid var(--gray2); }
+
+/* ===== GUEST FILTERS ===== */
+.filter-row { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.filter-chip {
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+.filter-chip.active { background: rgba(232,228,220,0.08); border-color: var(--gold); color: var(--gold); font-weight: 500; }
+
+/* ===== VENDOR ===== */
+.vendor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.vendor-card {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  position: relative;
+}
+.vendor-card .vc-category { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gold); margin-bottom: 8px; }
+.vendor-card .vc-name { font-size: 16px; font-weight: 600; color: var(--cream); margin-bottom: 4px; }
+.vendor-card .vc-contact { font-size: 12px; color: var(--muted); }
+.vendor-card .vc-cost { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--text); margin-top: 12px; }
+.vendor-card .vc-actions { display: flex; gap: 8px; margin-top: 14px; }
+.vendor-status-dot {
+  position: absolute; top: 16px; right: 16px;
+  width: 8px; height: 8px; border-radius: 50%;
+}
+
+/* ===== TEMPLATE THEMES ===== */
+.themes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.theme-card.umemulo-card { grid-column: 1 / -1; } .theme-card.umemulo-card .theme-preview { height: 220px; } .theme-card.umemulo-card .theme-preview-overlay .tpo-name { font-size: 22px; }
+.theme-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.34,1.2,0.64,1);
+  position: relative;
+  background: var(--panel2);
+}
+.theme-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,0.5); }
+.theme-card.selected { border-color: rgba(232,228,220,0.5); box-shadow: 0 0 0 1px rgba(232,228,220,0.15), 0 16px 40px rgba(0,0,0,0.4); }
+.theme-card.umemulo-card { border-color: rgba(196,140,60,0.4); }
+.theme-card.umemulo-card.selected { border-color: #C48C3C; box-shadow: 0 0 0 1px rgba(196,140,60,0.3), 0 16px 48px rgba(196,140,60,0.15); }
+.theme-preview {
+  height: 160px;
+  position: relative;
+  overflow: hidden;
+}
+.theme-preview img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+.theme-card:hover .theme-preview img { transform: scale(1.06); }
+.theme-preview-overlay {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 14px;
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+}
+.theme-preview-overlay .tpo-tag {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+  color: rgba(255,255,255,0.7); margin-bottom: 4px; font-weight: 600;
+}
+.theme-preview-overlay .tpo-name {
+  font-family: "Playfair Display", serif;
+  font-size: 17px; color: #fff; font-weight: 600; line-height: 1.2;
+}
+.theme-color-strip { display: flex; height: 4px; }
+.theme-color-strip span { flex: 1; }
+.theme-info { padding: 13px 16px 14px; }
+.theme-info p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.theme-info .theme-palette { display: flex; gap: 5px; margin-top: 10px; align-items: center; }
+.theme-info .theme-palette span {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.1);
+  display: inline-block;
+}
+.theme-selected-badge {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 99px;
+  display: none;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.theme-card.selected .theme-selected-badge { display: block; }
+.umemulo-badge {
+  position: absolute; top: 10px; left: 10px;
+  background: rgba(196,140,60,0.85);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 99px;
+}
+.umemulo-info-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-top: 10px; font-size: 11px; color: #C48C3C;
+  background: rgba(196,140,60,0.1); border: 1px solid rgba(196,140,60,0.25);
+  border-radius: 99px; padding: 4px 10px; cursor: pointer; transition: 0.2s;
+  font-family: "DM Sans", sans-serif;
+}
+.umemulo-info-btn:hover { background: rgba(196,140,60,0.2); }
+
+/* ===== SEARCH ===== */
+.search-wrap { position: relative; }
+.search-wrap input { padding-left: 36px; }
+.search-wrap::before { content: '🔍'; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; pointer-events: none; }
+
+/* ===== PROGRESS RING ===== */
+.donut-wrap { position: relative; display: inline-block; }
+.donut-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.donut-pct { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--cream); }
+.donut-sub { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+/* ===== EMPTY STATES ===== */
+.empty-state { text-align: center; padding: 48px 24px; }
+.empty-state .es-icon { font-size: 48px; opacity: 0.4; margin-bottom: 12px; }
+.empty-state h4 { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--muted); margin-bottom: 6px; }
+.empty-state p { font-size: 13px; color: var(--muted); opacity: 0.7; }
+
+/* ===== DASHBOARD TIMELINE ===== */
+.timeline { padding: 4px 0; }
+.tl-item { display: flex; gap: 16px; padding-bottom: 20px; position: relative; }
+.tl-item::before { content: ''; position: absolute; left: 15px; top: 28px; bottom: 0; width: 1px; background: var(--border); }
+.tl-item:last-child::before { display: none; }
+.tl-dot { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--gold); background: var(--panel2); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.tl-content { flex: 1; }
+.tl-title { font-size: 13px; font-weight: 500; color: var(--text); }
+.tl-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.tl-date { font-size: 11px; color: var(--gold); margin-top: 3px; }
+
+/* ===== NOTIFICATION TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 20px;
+  font-size: 13px;
+  color: var(--text);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow);
+  animation: toastIn 0.3s ease;
+  max-width: 320px;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== TWO-COL LAYOUT ===== */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+/* ===== MENU CHOICE PILLS ===== */
+.menu-choice {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(138,171,168,0.12);
+  color: var(--teal);
+  border: 1px solid rgba(138,171,168,0.22);
+}
+.menu-veg { background: rgba(110,168,130,0.12); color: var(--success); border-color: rgba(110,168,130,0.3); }
+.menu-meat { background: rgba(184,160,152,0.10); color: var(--rose); border-color: rgba(184,160,152,0.22); }
+.menu-vegan { background: rgba(138,171,168,0.10); color: var(--teal); border-color: rgba(138,171,168,0.22); }
+
+.checkin-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  transition: 0.2s;
+}
+.checkin-btn.in { background: rgba(110,168,130,0.15); color: var(--success); border: 1px solid rgba(110,168,130,0.3); }
+.checkin-btn.out { background: rgba(232,228,220,0.08); color: var(--gold); border: 1px solid var(--border); }
+.checkin-btn.in:hover { background: rgba(110,168,130,0.3); }
+.checkin-btn.out:hover { background: rgba(232,228,220,0.12); }
+
+/* ===== DELETE ICON ===== */
+.del-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 15px;
+  transition: color 0.2s;
+  padding: 4px;
+}
+.del-btn:hover { color: var(--danger); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .themes-grid { grid-template-columns: 1fr 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .budget-overview { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+/* ===== AUTH OVERLAY ===== */
+#auth-overlay {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  z-index: 9999;
+  display: flex;
+  align-items: stretch;
+  min-height: 100vh;
+}
+.auth-left {
+  width: 440px; min-width: 440px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 44px 42px;
+  position: relative; overflow: hidden;
+}
+.auth-left::before {
+  content: ''; position: absolute;
+  top: -80px; left: -80px; width: 260px; height: 260px;
+  background: radial-gradient(circle, rgba(232,228,220,0.04) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.auth-brand { margin-bottom: 40px; }
+.auth-brand h1 { font-family: "Playfair Display", serif; font-size: 24px; color: var(--cream); }
+.auth-brand p { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 3px; }
+.auth-tabs { display: flex; gap: 0; margin-bottom: 28px; border-bottom: 1px solid var(--border); }
+.auth-tab {
+  padding: 9px 18px; font-size: 13px; font-weight: 500; cursor: pointer;
+  color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: all 0.2s; font-family: "DM Sans", sans-serif;
+  background: none; border-top: none; border-left: none; border-right: none;
+}
+.auth-tab.active { color: var(--cream); border-bottom-color: var(--cream); }
+.auth-panel { display: none; }
+.auth-panel.active { display: block; }
+.auth-title { font-family: "Playfair Display", serif; font-size: 21px; color: var(--cream); margin-bottom: 5px; }
+.auth-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+.auth-field { margin-bottom: 14px; }
+.auth-field label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 5px; font-weight: 600; }
+.auth-field input, .auth-field select {
+  width: 100%; background: var(--bg3);
+  border: 1px solid rgba(232,228,220,0.08);
+  border-radius: var(--radius-sm); padding: 10px 13px;
+  color: var(--text); font-family: "DM Sans", sans-serif; font-size: 13px; outline: none;
+  transition: border-color 0.2s;
+}
+.auth-field input:focus, .auth-field select:focus { border-color: rgba(232,228,220,0.3); box-shadow: 0 0 0 3px rgba(232,228,220,0.05); }
+.auth-field .field-hint { font-size: 11px; color: var(--muted); margin-top: 4px; opacity: 0.7; }
+.auth-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.btn-auth {
+  width: 100%; padding: 13px;
+  background: var(--cream); color: var(--bg);
+  border: none; border-radius: var(--radius-sm);
+  font-family: "Playfair Display", serif; font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; margin-top: 6px;
+}
+.btn-auth:hover { background: var(--gold2); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,228,220,0.12); }
+.avatar-upload-wrap { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.avatar-preview {
+  width: 62px; height: 62px; border-radius: 50%;
+  background: var(--bg3); border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; overflow: hidden; flex-shrink: 0; cursor: pointer; transition: border-color 0.2s;
+}
+.avatar-preview:hover { border-color: rgba(232,228,220,0.3); }
+.avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-upload-info { flex: 1; }
+.avatar-upload-info p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.avatar-upload-btn {
+  font-size: 11px; color: var(--cream); background: var(--bg3);
+  border: 1px solid var(--border); border-radius: 6px; padding: 4px 11px;
+  cursor: pointer; font-family: "DM Sans", sans-serif; transition: 0.2s;
+  display: inline-block; margin-top: 5px;
+}
+.avatar-upload-btn:hover { border-color: rgba(232,228,220,0.3); }
+.passcode-wrap { display: flex; gap: 9px; justify-content: flex-start; margin: 6px 0; }
+.passcode-digit {
+  width: 48px; height: 52px; background: var(--bg3);
+  border: 1px solid rgba(232,228,220,0.08); border-radius: 10px;
+  font-size: 20px; text-align: center; color: var(--cream);
+  font-family: "Playfair Display", serif; outline: none; transition: border-color 0.2s;
+}
+.passcode-digit:focus { border-color: rgba(232,228,220,0.35); box-shadow: 0 0 0 3px rgba(232,228,220,0.06); }
+.reg-steps { display: flex; gap: 6px; margin-bottom: 24px; }
+.reg-step { flex: 1; height: 3px; border-radius: 99px; background: var(--bg3); transition: background 0.35s; }
+.reg-step.active { background: var(--cream); }
+.reg-step.done { background: var(--muted); }
+.auth-error {
+  background: rgba(184,92,92,0.12); border: 1px solid rgba(184,92,92,0.25);
+  border-radius: 8px; padding: 9px 13px; font-size: 12px; color: var(--danger);
+  margin-bottom: 12px; display: none;
+}
+.auth-error.show { display: block; }
+.user-pills { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 20px; }
+.user-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 99px; padding: 6px 13px 6px 7px;
+  cursor: pointer; transition: all 0.2s; font-size: 13px; color: var(--text);
+}
+.user-pill:hover { border-color: rgba(232,228,220,0.3); background: var(--panel); }
+.user-pill.selected { border-color: var(--cream); background: var(--panel2); }
+.user-pill-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--panel2); display: flex; align-items: center; justify-content: center;
+  font-size: 13px; overflow: hidden;
+}
+.user-pill-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.auth-right {
+  flex: 1; background: var(--bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 48px; position: relative; overflow: hidden;
+}
+.auth-card-stack { position: relative; height: 260px; width: 340px; margin-bottom: 36px; }
+.auth-demo-card {
+  position: absolute; border-radius: 14px; padding: 22px;
+  border: 1px solid var(--border);
+}
+.auth-demo-card:nth-child(1) { background: var(--panel2); width: 260px; bottom: 0; left: 50px; transform: rotate(-5deg); }
+.auth-demo-card:nth-child(2) { background: var(--panel); width: 280px; bottom: 36px; left: 30px; transform: rotate(-1.5deg); z-index: 2; }
+.auth-demo-card:nth-child(3) { background: var(--bg2); width: 300px; bottom: 72px; left: 10px; transform: rotate(2deg); z-index: 3; border-color: rgba(232,228,220,0.16); }
+.auth-demo-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 8px; }
+.auth-demo-name { font-family: "Playfair Display", serif; font-size: 18px; color: var(--cream); }
+.auth-demo-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.auth-demo-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--panel2); border: 2px solid var(--border);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 16px; float: right; margin-top: -2px;
+}
+.auth-tagline { text-align: center; }
+.auth-tagline h2 { font-family: "Playfair Display", serif; font-size: 26px; color: var(--cream); line-height: 1.35; margin-bottom: 12px; }
+.auth-tagline p { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 320px; margin: 0 auto; }
+.auth-designer { position: absolute; bottom: 24px; font-size: 11px; color: var(--muted); opacity: 0.5; }
+
+/* Sidebar user profile */
+.sidebar-user {
+  display: flex; align-items: center; gap: 11px;
+  padding: 16px 14px 12px; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.2s;
+}
+.sidebar-user:hover { background: var(--panel); }
+.sidebar-user-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--panel2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; overflow: hidden; flex-shrink: 0;
+}
+.sidebar-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.sidebar-user-info { flex: 1; min-width: 0; }
+.sidebar-user-name { font-size: 13px; font-weight: 600; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-user-handle { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.sidebar-logout { font-size: 15px; color: var(--muted); cursor: pointer; flex-shrink: 0; transition: color 0.2s; }
+.sidebar-logout:hover { color: var(--danger); }
+
+/* Welcome banner */
+.welcome-banner {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px 24px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 18px; position: relative; overflow: hidden;
+}
+.welcome-banner::after {
+  content: ''; position: absolute; top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(232,228,220,0.04), transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.welcome-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--panel2); border: 2px solid rgba(232,228,220,0.18);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; overflow: hidden; flex-shrink: 0;
+}
+.welcome-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.welcome-text h3 { font-family: "Playfair Display", serif; font-size: 19px; color: var(--cream); }
+.welcome-text p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.welcome-meta { margin-left: auto; text-align: right; }
+.welcome-meta .wm-city { font-size: 12px; color: var(--muted); }
+.welcome-meta .wm-member { font-size: 11px; color: var(--muted); opacity: 0.55; margin-top: 2px; }
+
+/* Profile view modal */
+.profile-avatar-lg {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: var(--bg3); border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; overflow: hidden; margin: 0 auto 18px;
+}
+.profile-avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
+.profile-detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.profile-detail-row:last-child { border-bottom: none; }
+.profile-detail-row span:first-child { color: var(--muted); }
+.profile-detail-row span:last-child { color: var(--cream); font-weight: 500; }
+
+</style>
+</head>
+<body>
+
+<!-- ===== AUTH OVERLAY ===== -->
+<div id="auth-overlay">
+  <!-- Left: forms -->
+  <div class="auth-left">
+    <div class="auth-brand">
+      <h1>SS Event Studio</h1>
+      <p>Personalised Event Planning</p>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">Create Account</button>
+    </div>
+
+    <!-- LOGIN PANEL -->
+    <div class="auth-panel active" id="auth-login">
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-subtitle">Select your account or enter your username to continue.</div>
+      <div class="user-pills" id="user-pills"></div>
+      <div class="auth-error" id="login-error">Incorrect username or passcode. Please try again.</div>
+      <div class="auth-field">
+        <label>Username</label>
+        <input type="text" id="login-username" placeholder="your_username" autocomplete="off">
+      </div>
+      <div class="auth-field">
+        <label>Passcode (4 digits)</label>
+        <div class="passcode-wrap" id="login-passcode-wrap">
+          <input class="passcode-digit" maxlength="1" type="password" inputmode="numeric" id="lp0">
+          <input class="passcode-digit" maxlength="1" type="password" inputmode="numeric" id="lp1">
+          <input class="passcode-digit" maxlength="1" type="password" inputmode="numeric" id="lp2">
+          <input class="passcode-digit" maxlength="1" type="password" inputmode="numeric" id="lp3">
+        </div>
+      </div>
+      <button class="btn-auth" onclick="doLogin()">Sign In</button>
+    </div>
+
+    <!-- REGISTER PANEL -->
+    <div class="auth-panel" id="auth-register">
+      <div class="reg-steps" id="reg-steps">
+        <div class="reg-step active" id="rs0"></div>
+        <div class="reg-step" id="rs1"></div>
+        <div class="reg-step" id="rs2"></div>
+      </div>
+
+      <!-- Step 1: Identity -->
+      <div id="reg-step-1">
+        <div class="auth-title">Create your account</div>
+        <div class="auth-subtitle">Step 1 of 3 — Your identity</div>
+        <div class="avatar-upload-wrap">
+          <div class="avatar-preview" id="reg-avatar-preview" onclick="document.getElementById('reg-avatar-input').click()">👤</div>
+          <div class="avatar-upload-info">
+            <p>Upload a profile photo.<br>JPG, PNG or GIF under 2MB.</p>
+            <span class="avatar-upload-btn" onclick="document.getElementById('reg-avatar-input').click()">Choose Photo</span>
+          </div>
+        </div>
+        <input type="file" id="reg-avatar-input" accept="image/*" style="display:none" onchange="handleAvatarUpload(this)">
+        <div class="auth-cols">
+          <div class="auth-field">
+            <label>First Name</label>
+            <input type="text" id="reg-firstname" placeholder="Emma">
+          </div>
+          <div class="auth-field">
+            <label>Last Name</label>
+            <input type="text" id="reg-lastname" placeholder="Johnson">
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>Preferred Name <span style="font-size:10px;opacity:0.6">(used throughout the app)</span></label>
+          <input type="text" id="reg-preferred" placeholder="e.g. Em, Emmy, Emma J.">
+          <div class="field-hint">This is the name we'll greet you with every time.</div>
+        </div>
+        <div class="auth-error" id="reg-error-1"></div>
+        <button class="btn-auth" onclick="regNext(1)">Continue →</button>
+      </div>
+
+      <!-- Step 2: Account details -->
+      <div id="reg-step-2" style="display:none">
+        <div class="auth-title">Account details</div>
+        <div class="auth-subtitle">Step 2 of 3 — Login credentials</div>
+        <div class="auth-field">
+          <label>Username <span style="font-size:10px;opacity:0.6">(unique, no spaces)</span></label>
+          <input type="text" id="reg-username" placeholder="emma_j" autocomplete="off">
+        </div>
+        <div class="auth-field">
+          <label>4-Digit Passcode</label>
+          <div class="passcode-wrap">
+            <input class="passcode-digit" maxlength="1" type="password" inputmode="numeric" id="rp0">
+            <input class="passcode-digit" maxlength="1" type="password" inputmode="numeric" id="rp1">
+            <input class="passcode-digit" maxlength="1" type="password" inputmode="numeric" id="rp2">
+            <input class="passcode-digit" maxlength="1" type="password" inputmode="numeric" id="rp3">
+          </div>
+          <div class="field-hint">Choose a 4-digit code you'll remember.</div>
+        </div>
+        <div class="auth-field">
+          <label>Email Address</label>
+          <input type="email" id="reg-email" placeholder="emma@example.com">
+        </div>
+        <div class="auth-error" id="reg-error-2"></div>
+        <div style="display:flex;gap:10px">
+          <button class="btn-auth" style="background:var(--panel2);color:var(--text);flex:0.4" onclick="regBack(2)">← Back</button>
+          <button class="btn-auth" style="flex:1" onclick="regNext(2)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Personal info -->
+      <div id="reg-step-3" style="display:none">
+        <div class="auth-title">A little about you</div>
+        <div class="auth-subtitle">Step 3 of 3 — Personal details</div>
+        <div class="auth-cols">
+          <div class="auth-field">
+            <label>Birthday</label>
+            <input type="date" id="reg-birthday">
+          </div>
+          <div class="auth-field">
+            <label>City of Origin</label>
+            <input type="text" id="reg-city" placeholder="Lusaka, Zambia">
+          </div>
+        </div>
+        <div class="auth-cols">
+          <div class="auth-field">
+            <label>Phone (optional)</label>
+            <input type="tel" id="reg-phone" placeholder="+260 97 000 0000">
+          </div>
+          <div class="auth-field">
+            <label>Occupation (optional)</label>
+            <input type="text" id="reg-occupation" placeholder="Event Coordinator">
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>How did you hear about us?</label>
+          <select id="reg-source">
+            <option value="">— Select —</option>
+            <option>Friend or colleague</option>
+            <option>Social media</option>
+            <option>Search engine</option>
+            <option>Event industry blog</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="auth-error" id="reg-error-3"></div>
+        <div style="display:flex;gap:10px">
+          <button class="btn-auth" style="background:var(--panel2);color:var(--text);flex:0.4" onclick="regBack(3)">← Back</button>
+          <button class="btn-auth" style="flex:1" onclick="completeRegistration()">Create Account ✦</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: decorative -->
+  <div class="auth-right">
+    <div class="auth-card-stack">
+      <div class="auth-demo-card">
+        <div class="auth-demo-label">Guest Planner</div>
+        <div class="auth-demo-name">Wedding Day</div>
+        <div class="auth-demo-sub">148 guests · $14,200 budget</div>
+      </div>
+      <div class="auth-demo-card">
+        <div class="auth-demo-avatar">🌿</div>
+        <div class="auth-demo-label">Your Profile</div>
+        <div class="auth-demo-name">Sophie Chen</div>
+        <div class="auth-demo-sub">Nairobi · Since Jan 2025</div>
+      </div>
+      <div class="auth-demo-card">
+        <div class="auth-demo-avatar">✨</div>
+        <div class="auth-demo-label">Active Event</div>
+        <div class="auth-demo-name">Garden Anniversary</div>
+        <div class="auth-demo-sub">Sept 20, 2025 · The Pavilion</div>
+      </div>
+    </div>
+    <div class="auth-tagline">
+      <h2>Your events,<br>beautifully organised.</h2>
+      <p>Plan every detail, coordinate every vendor, and celebrate every guest — all from one personalised studio.</p>
+    </div>
+    <div class="auth-designer">Designed by Super Shealty</div>
+  </div>
+</div>
+
+<!-- Profile View Modal -->
+<div class="modal-overlay" id="modal-profile">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-title">My Profile</div>
+    <div class="profile-avatar-lg" id="profile-avatar-lg">👤</div>
+    <div id="profile-details"></div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" onclick="doLogout()">Sign Out</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-profile')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h1>SS Event Studio</h1>
+    <span>Event Studio</span>
+  </div>
+  <div class="sidebar-user" onclick="openModal('modal-profile')" id="sidebar-user-widget" style="display:none">
+    <div class="sidebar-user-avatar" id="sidebar-avatar">👤</div>
+    <div class="sidebar-user-info">
+      <div class="sidebar-user-name" id="sidebar-preferred-name">—</div>
+      <div class="sidebar-user-handle" id="sidebar-username-handle">@username</div>
+    </div>
+    <span class="sidebar-logout" onclick="event.stopPropagation();doLogout()" title="Sign out">⏻</span>
+  </div>
+
+  <div class="sidebar-section">Main</div>
+  <div class="nav-item active" onclick="navigate('dashboard', this)">
+    <span class="icon">✦</span> Dashboard
+  </div>
+  <div class="nav-item" onclick="navigate('events', this)">
+    <span class="icon">🎪</span> Events & Themes
+  </div>
+
+  <div class="sidebar-section">Planning</div>
+  <div class="nav-item" onclick="navigate('guests', this)">
+    <span class="icon">👥</span> Guest List
+    <span class="nav-badge" id="guest-count-badge">0</span>
+  </div>
+  <div class="nav-item" onclick="navigate('rsvp', this)">
+    <span class="icon">📨</span> Smart RSVP
+  </div>
+  <div class="nav-item" onclick="navigate('vendors', this)">
+    <span class="icon">🤝</span> Vendors
+  </div>
+  <div class="nav-item" onclick="navigate('budget', this)">
+    <span class="icon">💰</span> Budget Suite
+  </div>
+  <div class="nav-item" onclick="navigate('tasks', this)">
+    <span class="icon">✅</span> Checklist
+    <span class="nav-badge" id="task-count-badge" style="background:var(--accent)">0</span>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="event-selector" onclick="navigate('events', document.querySelectorAll('.nav-item')[1])">
+
+      <div class="es-label">Active Event</div>
+      <div class="es-name" id="sidebar-event-name">No event selected</div>
+      <div class="es-date" id="sidebar-event-date">Click to select</div>
+    </div>
+    <div style="margin-top:14px; text-align:center; font-size:11px; color:var(--muted); letter-spacing:0.5px; opacity:0.7;">
+      Designed by <span style="color:var(--gold); font-weight:600; opacity:1;">Super Shealty</span>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <h2 id="page-title">Dashboard</h2>
+    <div class="topbar-actions" id="topbar-actions">
+      <span id="topbar-greeting" style="font-size:12px;color:var(--muted)">SS Event Studio ✦</span>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD PAGE ===== -->
+  <div class="page active" id="page-dashboard">
+    <div id="welcome-banner" class="welcome-banner"></div>
+    <div class="stats-grid">
+      <div class="stat-card" style="--accent-color: var(--gold)">
+        <div class="stat-icon">👥</div>
+        <div class="stat-label">Total Guests</div>
+        <div class="stat-val" id="dash-guests">0</div>
+        <div class="stat-sub" id="dash-confirmed">0 confirmed</div>
+      </div>
+      <div class="stat-card" style="--accent-color: var(--success)">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Budget Used</div>
+        <div class="stat-val" id="dash-budget">$0</div>
+        <div class="stat-sub" id="dash-budget-sub">of $0 total</div>
+      </div>
+      <div class="stat-card" style="--accent-color: var(--accent)">
+        <div class="stat-icon">✅</div>
+        <div class="stat-label">Tasks Done</div>
+        <div class="stat-val" id="dash-tasks">0/0</div>
+        <div class="stat-sub" id="dash-tasks-sub">0% complete</div>
+      </div>
+      <div class="stat-card" style="--accent-color: var(--rose)">
+        <div class="stat-icon">🤝</div>
+        <div class="stat-label">Vendors</div>
+        <div class="stat-val" id="dash-vendors">0</div>
+        <div class="stat-sub" id="dash-vendors-sub">0 confirmed</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="section-block">
+        <div class="section-header">
+          <h3>Upcoming Milestones</h3>
+        </div>
+        <div class="section-body">
+          <div class="timeline" id="dashboard-timeline">
+            <div class="empty-state">
+              <div class="es-icon">📅</div>
+              <h4>No tasks yet</h4>
+              <p>Add tasks to see your timeline</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-block">
+          <div class="section-header"><h3>RSVP Overview</h3></div>
+          <div class="section-body">
+            <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap">
+              <div style="text-align:center">
+                <svg width="110" height="110" viewBox="0 0 110 110" id="rsvp-donut">
+                  <circle cx="55" cy="55" r="42" fill="none" stroke="var(--bg3)" stroke-width="12"/>
+                  <circle cx="55" cy="55" r="42" fill="none" stroke="var(--success)" stroke-width="12"
+                    stroke-dasharray="264" stroke-dashoffset="264" id="donut-confirmed"
+                    stroke-linecap="round" transform="rotate(-90 55 55)"/>
+                  <circle cx="55" cy="55" r="42" fill="none" stroke="var(--danger)" stroke-width="12"
+                    stroke-dasharray="264" stroke-dashoffset="264" id="donut-declined"
+                    stroke-linecap="round" transform="rotate(-90 55 55)"/>
+                </svg>
+                <div style="margin-top:4px; font-size:12px; color:var(--muted)">Response Rate</div>
+              </div>
+              <div style="flex:1; min-width:120px">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px">
+                  <span style="width:10px;height:10px;border-radius:50%;background:var(--success);flex-shrink:0"></span>
+                  <span style="font-size:13px;flex:1">Confirmed</span>
+                  <strong id="rsvp-confirmed-n" style="color:var(--success)">0</strong>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px">
+                  <span style="width:10px;height:10px;border-radius:50%;background:var(--gold);flex-shrink:0"></span>
+                  <span style="font-size:13px;flex:1">Pending</span>
+                  <strong id="rsvp-pending-n" style="color:var(--gold)">0</strong>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px">
+                  <span style="width:10px;height:10px;border-radius:50%;background:var(--danger);flex-shrink:0"></span>
+                  <span style="font-size:13px;flex:1">Declined</span>
+                  <strong id="rsvp-declined-n" style="color:var(--danger)">0</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="section-block" style="margin-top:0">
+          <div class="section-header"><h3>Budget Snapshot</h3></div>
+          <div class="section-body" id="budget-snapshot">
+            <p style="color:var(--muted); font-size:13px">No budget set yet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EVENTS & THEMES PAGE ===== -->
+  <div class="page" id="page-events">
+    <div class="section-block" style="margin-bottom:20px">
+      <div class="section-header">
+        <h3>Event Details</h3>
+        <button class="btn btn-gold btn-sm" onclick="saveEventDetails()">Save Event</button>
+      </div>
+      <div class="section-body">
+        <div class="form-row cols-2">
+          <div>
+            <label>Event Name</label>
+            <input type="text" id="event-name" placeholder="e.g. Emma & James Wedding">
+          </div>
+          <div>
+            <label>Event Type</label>
+            <select id="event-type">
+              <option>Wedding</option>
+              <option>Birthday</option>
+              <option>Corporate</option>
+              <option>Baby Shower</option>
+              <option>Anniversary</option>
+              <option>Graduation</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row cols-3">
+          <div>
+            <label>Date</label>
+            <input type="date" id="event-date">
+          </div>
+          <div>
+            <label>Time</label>
+            <input type="time" id="event-time" value="18:00">
+          </div>
+          <div>
+            <label>Venue</label>
+            <input type="text" id="event-venue" placeholder="Venue name or address">
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Total Budget ($)</label>
+            <input type="number" id="event-budget" placeholder="e.g. 15000">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-header"><h3>Choose a Theme Template</h3></div>
+      <div class="section-body">
+        <div class="themes-grid" id="themes-grid">
+          <!-- injected by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== GUEST LIST PAGE ===== -->
+  <div class="page" id="page-guests">
+    <div class="filter-row">
+      <div class="search-wrap" style="flex:1; max-width:280px">
+        <input type="text" placeholder="Search guests…" id="guest-search" oninput="renderGuests()">
+      </div>
+      <button class="filter-chip active" onclick="setGuestFilter('all', this)">All</button>
+      <button class="filter-chip" onclick="setGuestFilter('confirmed', this)">Confirmed</button>
+      <button class="filter-chip" onclick="setGuestFilter('pending', this)">Pending</button>
+      <button class="filter-chip" onclick="setGuestFilter('declined', this)">Declined</button>
+      <button class="btn btn-gold btn-sm" style="margin-left:auto" onclick="openModal('modal-add-guest')">+ Add Guest</button>
+    </div>
+
+    <div class="section-block">
+      <div class="section-header">
+        <h3>Guest List <span id="guest-list-count" style="font-size:14px;color:var(--muted);font-family:'DM Sans'"></span></h3>
+      </div>
+      <div class="section-body" style="padding:0">
+        <table>
+          <thead><tr>
+            <th>Name</th><th>Email</th><th>Table</th><th>Menu</th><th>RSVP</th><th>Check-in</th><th></th>
+          </tr></thead>
+          <tbody id="guests-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SMART RSVP PAGE ===== -->
+  <div class="page" id="page-rsvp">
+    <div class="two-col">
+      <div>
+        <div class="section-block">
+          <div class="section-header"><h3>Digital Invitation</h3></div>
+          <div class="section-body">
+            <div class="invite-card" id="invite-preview">
+              <div class="invite-event-name" id="inv-name">Your Event Name</div>
+              <div class="invite-event-sub" id="inv-sub">You are cordially invited</div>
+              <div class="invite-details">
+                <div class="invite-detail">
+                  <div class="id-label">Date</div>
+                  <div class="id-val" id="inv-date">TBD</div>
+                </div>
+                <div class="invite-detail">
+                  <div class="id-label">Time</div>
+                  <div class="id-val" id="inv-time">TBD</div>
+                </div>
+                <div class="invite-detail">
+                  <div class="id-label">Venue</div>
+                  <div class="id-val" id="inv-venue">TBD</div>
+                </div>
+              </div>
+              <div id="qr-container"></div>
+              <div style="font-size:11px;color:var(--muted);margin-top:8px">Scan to RSVP & check-in</div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:14px">
+              <button class="btn btn-gold" style="flex:1" onclick="generateInvite()">🔄 Refresh QR Code</button>
+              <button class="btn btn-ghost" onclick="copyInviteLink()">📋 Copy Link</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-header"><h3>Menu Options</h3></div>
+          <div class="section-body">
+            <div id="menu-options-list" style="margin-bottom:14px"></div>
+            <div style="display:flex; gap:10px">
+              <input type="text" id="new-menu-option" placeholder="e.g. Grilled Salmon, Veggie Risotto…" style="flex:1">
+              <button class="btn btn-gold btn-sm" onclick="addMenuOption()">Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-block">
+          <div class="section-header"><h3>RSVP Tracking</h3></div>
+          <div class="section-body" style="padding:0">
+            <table>
+              <thead><tr><th>Guest</th><th>Status</th><th>Menu</th><th>Checked In</th></tr></thead>
+              <tbody id="rsvp-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-header"><h3>Menu Breakdown</h3></div>
+          <div class="section-body" id="menu-breakdown">
+            <p style="color:var(--muted); font-size:13px">Add guests & menu choices to see breakdown.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== VENDORS PAGE ===== -->
+  <div class="page" id="page-vendors">
+    <div style="display:flex; justify-content:flex-end; margin-bottom:18px">
+      <button class="btn btn-gold" onclick="openModal('modal-add-vendor')">+ Add Vendor</button>
+    </div>
+    <div class="vendor-grid" id="vendors-grid">
+      <div class="empty-state" style="grid-column:1/-1">
+        <div class="es-icon">🤝</div>
+        <h4>No vendors yet</h4>
+        <p>Add caterers, photographers, florists and more</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BUDGET SUITE PAGE ===== -->
+  <div class="page" id="page-budget">
+    <div class="budget-overview">
+      <div class="budget-card">
+        <div class="bc-amt" id="b-total">$0</div>
+        <div class="bc-label">Total Budget</div>
+        <div class="bc-sub" id="b-total-sub">Set in Events</div>
+      </div>
+      <div class="budget-card">
+        <div class="bc-amt" id="b-spent" style="color:var(--danger)">$0</div>
+        <div class="bc-label">Total Spent</div>
+        <div class="bc-sub" id="b-spent-pct">0% used</div>
+      </div>
+      <div class="budget-card">
+        <div class="bc-amt" id="b-remaining" style="color:var(--success)">$0</div>
+        <div class="bc-label">Remaining</div>
+        <div class="bc-sub" id="b-remaining-sub">0 unpaid expenses</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Category Budgets</h3>
+            <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-category')">+ Category</button>
+          </div>
+          <div class="section-body" id="category-budgets">
+            <p style="color:var(--muted); font-size:13px">No categories set.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Expenses</h3>
+            <button class="btn btn-gold btn-sm" onclick="openModal('modal-add-expense')">+ Expense</button>
+          </div>
+          <div class="section-body" style="padding:0">
+            <table>
+              <thead><tr><th>Item</th><th>Category</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+              <tbody id="expenses-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TASKS / CHECKLIST PAGE ===== -->
+  <div class="page" id="page-tasks">
+    <div style="display:flex; gap:10px; margin-bottom:18px; align-items:center">
+      <div class="filter-row" style="margin:0; flex:1">
+        <button class="filter-chip active" onclick="setTaskFilter('all', this)">All</button>
+        <button class="filter-chip" onclick="setTaskFilter('todo', this)">To Do</button>
+        <button class="filter-chip" onclick="setTaskFilter('inprog', this)">In Progress</button>
+        <button class="filter-chip" onclick="setTaskFilter('done', this)">Done</button>
+      </div>
+      <button class="btn btn-gold btn-sm" onclick="openModal('modal-add-task')">+ Add Task</button>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="section-block">
+          <div class="section-header"><h3>📋 To Do</h3></div>
+          <div class="section-body" id="tasks-todo" style="min-height:80px"></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><h3>⏳ In Progress</h3></div>
+          <div class="section-body" id="tasks-inprog" style="min-height:80px"></div>
+        </div>
+      </div>
+      <div>
+        <div class="section-block">
+          <div class="section-header"><h3>✅ Done</h3></div>
+          <div class="section-body" id="tasks-done" style="min-height:80px"></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><h3>Overall Progress</h3></div>
+          <div class="section-body">
+            <div style="margin-bottom:12px">
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px">
+                <span style="font-size:13px; color:var(--muted)">Completion</span>
+                <span id="task-pct" style="font-size:13px; color:var(--gold); font-weight:600">0%</span>
+              </div>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar" id="task-progress-bar" style="width:0%; background:linear-gradient(90deg, #D8D4CC, #F5F0E6)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- Add Guest Modal -->
+<div class="modal-overlay" id="modal-add-guest">
+  <div class="modal">
+    <div class="modal-title">Add Guest</div>
+    <div class="form-row cols-2">
+      <div><label>First Name</label><input id="g-fname" placeholder="Emma"></div>
+      <div><label>Last Name</label><input id="g-lname" placeholder="Johnson"></div>
+    </div>
+    <div class="form-row">
+      <div><label>Email</label><input id="g-email" type="email" placeholder="emma@example.com"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div><label>Phone</label><input id="g-phone" placeholder="+1 555 000 0000"></div>
+      <div><label>Table / Seat</label><input id="g-table" placeholder="Table 4, Seat 2"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div>
+        <label>RSVP Status</label>
+        <select id="g-rsvp">
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="declined">Declined</option>
+        </select>
+      </div>
+      <div>
+        <label>Menu Choice</label>
+        <select id="g-menu">
+          <option value="">— Select —</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-guest')">Cancel</button>
+      <button class="btn btn-gold" onclick="addGuest()">Add Guest</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Vendor Modal -->
+<div class="modal-overlay" id="modal-add-vendor">
+  <div class="modal">
+    <div class="modal-title">Add Vendor</div>
+    <div class="form-row cols-2">
+      <div><label>Business Name</label><input id="v-name" placeholder="Blossom Florals"></div>
+      <div>
+        <label>Category</label>
+        <select id="v-cat">
+          <option>Catering</option><option>Photography</option><option>Florals</option>
+          <option>Music/DJ</option><option>Venue</option><option>Cake</option>
+          <option>Transport</option><option>Décor</option><option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row cols-2">
+      <div><label>Contact Name</label><input id="v-contact" placeholder="Sarah Bloom"></div>
+      <div><label>Phone / Email</label><input id="v-phone" placeholder="sarah@blossom.com"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div><label>Cost ($)</label><input id="v-cost" type="number" placeholder="2500"></div>
+      <div>
+        <label>Payment Status</label>
+        <select id="v-pay">
+          <option value="unpaid">Unpaid</option>
+          <option value="partial">Partial</option>
+          <option value="paid">Paid</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div><label>Notes</label><textarea id="v-notes" placeholder="Contract signed, deposit paid…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-vendor')">Cancel</button>
+      <button class="btn btn-gold" onclick="addVendor()">Add Vendor</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Task Modal -->
+<div class="modal-overlay" id="modal-add-task">
+  <div class="modal">
+    <div class="modal-title">Add Task</div>
+    <div class="form-row">
+      <div><label>Task Name</label><input id="t-name" placeholder="Book the venue"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div><label>Assignee</label><input id="t-assignee" placeholder="e.g. Sarah, Planner"></div>
+      <div><label>Due Date</label><input id="t-due" type="date"></div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label>Status</label>
+        <select id="t-status">
+          <option value="todo">To Do</option>
+          <option value="inprog">In Progress</option>
+          <option value="done">Done</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-task')">Cancel</button>
+      <button class="btn btn-gold" onclick="addTask()">Add Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Expense Modal -->
+<div class="modal-overlay" id="modal-add-expense">
+  <div class="modal">
+    <div class="modal-title">Add Expense</div>
+    <div class="form-row">
+      <div><label>Description</label><input id="e-desc" placeholder="Floral arrangements"></div>
+    </div>
+    <div class="form-row cols-2">
+      <div><label>Category</label><select id="e-cat"></select></div>
+      <div><label>Amount ($)</label><input id="e-amount" type="number" placeholder="500"></div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label>Payment Status</label>
+        <select id="e-status">
+          <option value="unpaid">Unpaid</option>
+          <option value="partial">Partial</option>
+          <option value="paid">Paid</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-expense')">Cancel</button>
+      <button class="btn btn-gold" onclick="addExpense()">Add Expense</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Category Modal -->
+<div class="modal-overlay" id="modal-add-category">
+  <div class="modal">
+    <div class="modal-title">Add Budget Category</div>
+    <div class="form-row">
+      <div><label>Category Name</label><input id="c-name" placeholder="Catering, Flowers, Music…"></div>
+    </div>
+    <div class="form-row">
+      <div><label>Budget Limit ($)</label><input id="c-limit" type="number" placeholder="3000"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-category')">Cancel</button>
+      <button class="btn btn-gold" onclick="addCategory()">Add Category</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== STATE =====================
+let state = JSON.parse(localStorage.getItem('lumiere_state') || 'null') || {
+  event: { name:'', type:'Wedding', date:'', time:'18:00', venue:'', budget:0, theme:'elegant' },
+  guests: [],
+  vendors: [],
+  tasks: [],
+  expenses: [],
+  categories: [],
+  menuOptions: ['Chicken', 'Vegetarian', 'Vegan', 'Fish'],
+};
+
+function save() { localStorage.setItem('lumiere_state', JSON.stringify(state)); }
+
+// ===================== NAVIGATION =====================
+function navigate(page, el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('page-' + page).classList.add('active');
+  const titles = { dashboard:'Dashboard', events:'Events & Themes', guests:'Guest List',
+    rsvp:'Smart RSVP', vendors:'Vendor Coordination', budget:'Budget Suite', tasks:'Task Checklist' };
+  document.getElementById('page-title').textContent = titles[page] || page;
+  if (page === 'rsvp') generateInvite();
+  if (page === 'budget') renderBudget();
+  if (page === 'tasks') renderTasks();
+  if (page === 'guests') renderGuests();
+  if (page === 'vendors') renderVendors();
+  if (page === 'dashboard') renderDashboard();
+  if (page === 'events') renderThemes();
+}
+
+// ===================== MODAL =====================
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if(e.target === o) o.classList.remove('open'); });
+});
+
+// ===================== TOAST =====================
+function toast(msg, icon='✦') {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<span>${icon}</span> ${msg}`;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// ===================== EVENTS & THEMES =====================
+const themes = [
+  {
+    id: 'umemulo',
+    name: 'Umemulo Special',
+    tag: 'Zulu Heritage',
+    desc: 'A sacred celebration of womanhood — ochre, ivory & earth tones drawn from the heart of Zulu tradition.',
+    palette: ['#C48C3C','#E8D5A3','#8B3A1A','#2C1A0E','#F5EDD8'],
+    strip: ['#C48C3C','#8B3A1A','#E8D5A3','#2C1A0E'],
+    img: 'https://images.unsplash.com/photo-1580746738099-b2d00b39cee5?w=700&h=360&fit=crop&auto=format',
+    fallback: 'linear-gradient(135deg,#2C1A0E,#8B3A1A,#C48C3C)',
+    special: true,
+  },
+  {
+    id: 'kente',
+    name: 'Kente Royale',
+    tag: 'West African',
+    desc: 'Vibrant gold, crimson & forest green inspired by the woven silk of Ghanaian Kente cloth worn by royalty.',
+    palette: ['#D4A017','#8B1A1A','#2D5A1B','#1A0D00','#F5E6C8'],
+    strip: ['#D4A017','#8B1A1A','#2D5A1B','#4A3000'],
+    img: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=700&h=360&fit=crop&auto=format',
+    fallback: 'linear-gradient(135deg,#1A0D00,#8B1A1A,#D4A017)',
+    special: false,
+  },
+  {
+    id: 'sahara',
+    name: 'Sahara Sunset',
+    tag: 'North African',
+    desc: 'Copper dunes, amber skies & bone-white linen — the warmth of the Sahara at golden hour.',
+    palette: ['#C87941','#E8C48A','#6B3D1E','#1A0F06','#F5E8D0'],
+    strip: ['#C87941','#E8C48A','#6B3D1E','#1A0F06'],
+    img: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=700&h=360&fit=crop&auto=format',
+    fallback: 'linear-gradient(135deg,#1A0F06,#6B3D1E,#C87941)',
+    special: false,
+  },
+  {
+    id: 'ndebele',
+    name: 'Ndebele Geometric',
+    tag: 'South African',
+    desc: 'Bold geometric patterns in crimson, cobalt & gold — inspired by the breathtaking murals of Ndebele women artists.',
+    palette: ['#C41E3A','#1B3A6B','#E8C000','#1A1A1A','#F5F0E6'],
+    strip: ['#C41E3A','#1B3A6B','#E8C000','#2D8B4A'],
+    img: 'https://images.unsplash.com/photo-1567301347116-4ffdfc154dce?w=700&h=360&fit=crop&auto=format',
+    fallback: 'linear-gradient(135deg,#1A1A1A,#C41E3A,#E8C000)',
+    special: false,
+  },
+  {
+    id: 'swahili',
+    name: 'Swahili Coast',
+    tag: 'East African',
+    desc: 'Monsoon blue, coral & white — evoking the ancient spice routes and dhow-sailed waters of the Swahili coast.',
+    palette: ['#1B6B8A','#E87040','#F5F0E6','#0D2D3A','#C8E8F0'],
+    strip: ['#1B6B8A','#E87040','#F5F0E6','#0D2D3A'],
+    img: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=700&h=360&fit=crop&auto=format',
+    fallback: 'linear-gradient(135deg,#0D2D3A,#1B6B8A,#E87040)',
+    special: false,
+  },
+  {
+    id: 'ubuntu',
+    name: 'Ubuntu Harvest',
+    tag: 'Pan-African',
+    desc: '"Umuntu ngumuntu ngabantu" — I am because we are. A warm celebration of community, kinship & belonging.',
+    palette: ['#8B4513','#D4872A','#2D5A1B','#1A0D00','#F5E0C0'],
+    strip: ['#8B4513','#D4872A','#2D5A1B','#5A2D0A'],
+    img: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=700&h=360&fit=crop&auto=format',
+    fallback: 'linear-gradient(135deg,#1A0D00,#8B4513,#D4872A)',
+    special: false,
+  },
+];
+
+function renderThemes() {
+  const grid = document.getElementById('themes-grid');
+  grid.innerHTML = themes.map(t => {
+    const paletteDots = t.palette.map(c => `<span style="background:${c}"></span>`).join('');
+    const colorStrip = t.strip.map(c => `<span style="background:${c}"></span>`).join('');
+    const isSelected = state.event.theme === t.id;
+    return `
+      <div class="theme-card ${isSelected ? 'selected':''} ${t.special ? 'umemulo-card':''}" onclick="selectTheme('${t.id}', this)">
+        <div class="theme-preview">
+          <img src="${t.img}" alt="${t.name}"
+            onerror="this.style.display='none';this.parentNode.style.background='${t.fallback}'"
+            loading="lazy">
+          <div class="theme-preview-overlay">
+            <div class="tpo-tag">${t.tag}</div>
+            <div class="tpo-name">${t.name}</div>
+          </div>
+          ${t.special ? '<div class="umemulo-badge">✦ Featured</div>' : ''}
+          <div class="theme-selected-badge">✓ Selected</div>
+        </div>
+        <div class="theme-color-strip">${colorStrip}</div>
+        <div class="theme-info">
+          <p>${t.desc}</p>
+          <div class="theme-palette">${paletteDots}
+            ${t.special ? `<button class="umemulo-info-btn" onclick="event.stopPropagation();openModal('modal-umemulo')">Read the story ↗</button>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Populate form
+  if (state.event.name) document.getElementById('event-name').value = state.event.name;
+  if (state.event.date) document.getElementById('event-date').value = state.event.date;
+  if (state.event.time) document.getElementById('event-time').value = state.event.time;
+  if (state.event.venue) document.getElementById('event-venue').value = state.event.venue;
+  if (state.event.budget) document.getElementById('event-budget').value = state.event.budget;
+  document.getElementById('event-type').value = state.event.type;
+}
+
+function selectTheme(id, el) {
+  document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.event.theme = id;
+  save();
+  if (id === 'umemulo') toast('Umemulo Special selected. Bayede! 🙌', '✦');
+}
+
+function saveEventDetails() {
+  state.event.name = document.getElementById('event-name').value;
+  state.event.type = document.getElementById('event-type').value;
+  state.event.date = document.getElementById('event-date').value;
+  state.event.time = document.getElementById('event-time').value;
+  state.event.venue = document.getElementById('event-venue').value;
+  state.event.budget = parseFloat(document.getElementById('event-budget').value) || 0;
+  save();
+  updateSidebarEvent();
+  toast('Event saved!', '🎉');
+}
+
+function updateSidebarEvent() {
+  document.getElementById('sidebar-event-name').textContent = state.event.name || 'No event';
+  document.getElementById('sidebar-event-date').textContent = state.event.date ? 
+    new Date(state.event.date + 'T12:00').toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : 'Date TBD';
+}
+
+// ===================== GUESTS =====================
+let guestFilter = 'all';
+function setGuestFilter(f, el) {
+  guestFilter = f;
+  document.querySelectorAll('#page-guests .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderGuests();
+}
+
+function addGuest() {
+  const fname = document.getElementById('g-fname').value.trim();
+  const lname = document.getElementById('g-lname').value.trim();
+  if (!fname) { toast('Name required', '⚠️'); return; }
+  state.guests.push({
+    id: Date.now(),
+    name: fname + ' ' + lname,
+    email: document.getElementById('g-email').value,
+    phone: document.getElementById('g-phone').value,
+    table: document.getElementById('g-table').value,
+    rsvp: document.getElementById('g-rsvp').value,
+    menu: document.getElementById('g-menu').value,
+    checkedIn: false
+  });
+  save(); closeModal('modal-add-guest');
+  ['g-fname','g-lname','g-email','g-phone','g-table'].forEach(id => document.getElementById(id).value = '');
+  renderGuests(); updateBadges(); renderDashboard();
+  toast('Guest added!', '👤');
+}
+
+function deleteGuest(id) {
+  state.guests = state.guests.filter(g => g.id !== id);
+  save(); renderGuests(); updateBadges(); renderDashboard();
+}
+
+function toggleCheckin(id) {
+  const g = state.guests.find(g => g.id === id);
+  if (g) { g.checkedIn = !g.checkedIn; save(); renderGuests(); renderRSVP(); }
+}
+
+function renderGuests() {
+  const search = document.getElementById('guest-search')?.value?.toLowerCase() || '';
+  let list = state.guests.filter(g => {
+    if (guestFilter !== 'all' && g.rsvp !== guestFilter) return false;
+    if (search && !g.name.toLowerCase().includes(search) && !g.email.toLowerCase().includes(search)) return false;
+    return true;
+  });
+  document.getElementById('guest-list-count').textContent = `(${list.length} shown of ${state.guests.length})`;
+  const tbody = document.getElementById('guests-tbody');
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:32px">No guests found</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(g => `
+    <tr>
+      <td><strong style="color:var(--cream)">${g.name}</strong></td>
+      <td style="color:var(--muted)">${g.email || '—'}</td>
+      <td style="color:var(--muted)">${g.table || '—'}</td>
+      <td>${g.menu ? `<span class="menu-choice menu-${menuClass(g.menu)}">${g.menu}</span>` : '—'}</td>
+      <td><span class="badge badge-${g.rsvp}">${cap(g.rsvp)}</span></td>
+      <td>
+        <button class="checkin-btn ${g.checkedIn ? 'in':'out'}" onclick="toggleCheckin(${g.id})">
+          ${g.checkedIn ? '✓ Checked In' : 'Check In'}
+        </button>
+      </td>
+      <td><button class="del-btn" onclick="deleteGuest(${g.id})" title="Remove">✕</button></td>
+    </tr>
+  `).join('');
+
+  // Update RSVP page if visible
+  renderRSVP();
+}
+
+function menuClass(m) {
+  const ml = m.toLowerCase();
+  if (ml.includes('vegan')) return 'vegan';
+  if (ml.includes('veg')) return 'veg';
+  if (ml.includes('meat') || ml.includes('chicken') || ml.includes('beef') || ml.includes('fish') || ml.includes('salmon')) return 'meat';
+  return '';
+}
+
+// ===================== RSVP =====================
+function generateInvite() {
+  const ev = state.event;
+  document.getElementById('inv-name').textContent = ev.name || 'Your Event';
+  document.getElementById('inv-sub').textContent = ev.type ? `${ev.type} Celebration` : 'You are cordially invited';
+  document.getElementById('inv-date').textContent = ev.date ? new Date(ev.date+'T12:00').toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric'}) : 'TBD';
+  document.getElementById('inv-time').textContent = ev.time ? formatTime(ev.time) : 'TBD';
+  document.getElementById('inv-venue').textContent = ev.venue || 'TBD';
+
+  const qrWrap = document.getElementById('qr-container');
+  qrWrap.innerHTML = '';
+  const link = `https://lumiere.events/rsvp/${encodeURIComponent(ev.name || 'event')}?t=${Date.now()}`;
+  try {
+    new QRCode(qrWrap, { text: link, width: 100, height: 100, colorDark:'#E8E4DC', colorLight:'#1F1F23' });
+  } catch(e) {
+    qrWrap.innerHTML = `<div style="width:100px;height:100px;background:var(--bg3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px">📱</div>`;
+  }
+  renderRSVP();
+  renderMenuOptions();
+}
+
+function copyInviteLink() {
+  const link = `https://lumiere.events/rsvp/${encodeURIComponent(state.event.name || 'event')}`;
+  navigator.clipboard.writeText(link).then(() => toast('Invite link copied!', '📋'));
+}
+
+function formatTime(t) {
+  if (!t) return 'TBD';
+  const [h, m] = t.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  return `${h % 12 || 12}:${m.toString().padStart(2,'0')} ${ampm}`;
+}
+
+function renderRSVP() {
+  const tbody = document.getElementById('rsvp-tbody');
+  if (!tbody) return;
+  if (!state.guests.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px">No guests yet</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = state.guests.map(g => `
+    <tr>
+      <td><strong style="color:var(--cream)">${g.name}</strong></td>
+      <td><span class="badge badge-${g.rsvp}">${cap(g.rsvp)}</span></td>
+      <td>${g.menu ? `<span class="menu-choice menu-${menuClass(g.menu)}">${g.menu}</span>` : '<span style="color:var(--muted)">—</span>'}</td>
+      <td>${g.checkedIn ? '<span style="color:var(--success);font-weight:600">✓ In</span>' : '<span style="color:var(--muted)">—</span>'}</td>
+    </tr>
+  `).join('');
+
+  // Menu breakdown
+  const breakdown = {};
+  state.guests.forEach(g => { if (g.menu) breakdown[g.menu] = (breakdown[g.menu]||0)+1; });
+  const bd = document.getElementById('menu-breakdown');
+  if (!bd) return;
+  if (!Object.keys(breakdown).length) { bd.innerHTML = '<p style="color:var(--muted);font-size:13px">No menu choices recorded.</p>'; return; }
+  bd.innerHTML = Object.entries(breakdown).map(([k,v]) => `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
+      <span style="font-size:13px; color:var(--text)">${k}</span>
+      <div style="display:flex; align-items:center; gap:10px">
+        <div style="width:100px; background:var(--bg3); border-radius:99px; height:6px">
+          <div style="width:${Math.round(v/state.guests.length*100)}%; height:100%; background:var(--teal); border-radius:99px"></div>
+        </div>
+        <strong style="color:var(--teal); min-width:20px; text-align:right">${v}</strong>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderMenuOptions() {
+  const container = document.getElementById('menu-options-list');
+  if (!container) return;
+  container.innerHTML = state.menuOptions.map((opt,i) => `
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px">
+      <span class="menu-choice menu-${menuClass(opt)}" style="flex:1; text-align:left; padding:6px 12px">${opt}</span>
+      <button class="del-btn" onclick="removeMenuOption(${i})">✕</button>
+    </div>
+  `).join('');
+
+  // Update guest modal select
+  const sel = document.getElementById('g-menu');
+  const cur = sel?.value;
+  if (sel) {
+    sel.innerHTML = `<option value="">— Select —</option>` + state.menuOptions.map(o => `<option ${o===cur?'selected':''}>${o}</option>`).join('');
+  }
+}
+
+function addMenuOption() {
+  const val = document.getElementById('new-menu-option').value.trim();
+  if (!val) return;
+  state.menuOptions.push(val);
+  document.getElementById('new-menu-option').value = '';
+  save(); renderMenuOptions();
+}
+
+function removeMenuOption(i) {
+  state.menuOptions.splice(i, 1);
+  save(); renderMenuOptions();
+}
+
+// ===================== VENDORS =====================
+function addVendor() {
+  const name = document.getElementById('v-name').value.trim();
+  if (!name) { toast('Vendor name required','⚠️'); return; }
+  state.vendors.push({
+    id: Date.now(),
+    name, category: document.getElementById('v-cat').value,
+    contact: document.getElementById('v-contact').value,
+    phone: document.getElementById('v-phone').value,
+    cost: parseFloat(document.getElementById('v-cost').value) || 0,
+    payment: document.getElementById('v-pay').value,
+    notes: document.getElementById('v-notes').value,
+  });
+  save(); closeModal('modal-add-vendor');
+  ['v-name','v-contact','v-phone','v-cost','v-notes'].forEach(id => document.getElementById(id).value='');
+  renderVendors(); updateBadges(); renderDashboard();
+  toast('Vendor added!', '🤝');
+}
+
+function deleteVendor(id) {
+  state.vendors = state.vendors.filter(v => v.id !== id);
+  save(); renderVendors(); updateBadges(); renderDashboard();
+}
+
+function renderVendors() {
+  const grid = document.getElementById('vendors-grid');
+  if (!state.vendors.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">🤝</div><h4>No vendors yet</h4><p>Add caterers, photographers, florists and more</p></div>`;
+    return;
+  }
+  const dotColor = { paid:'var(--success)', partial:'var(--accent)', unpaid:'var(--danger)' };
+  grid.innerHTML = state.vendors.map(v => `
+    <div class="vendor-card">
+      <span class="vendor-status-dot" style="background:${dotColor[v.payment]}"></span>
+      <div class="vc-category">${v.category}</div>
+      <div class="vc-name">${v.name}</div>
+      <div class="vc-contact">${v.contact}${v.phone ? ' · '+v.phone:''}</div>
+      <div class="vc-cost">$${v.cost.toLocaleString()}</div>
+      ${v.notes ? `<div style="font-size:11px;color:var(--muted);margin-top:6px">${v.notes}</div>`:''}
+      <div class="vc-actions">
+        <span class="badge badge-${v.payment}">${cap(v.payment)}</span>
+        <button class="del-btn" onclick="deleteVendor(${v.id})" title="Remove" style="margin-left:auto">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===================== BUDGET =====================
+function addCategory() {
+  const name = document.getElementById('c-name').value.trim();
+  const limit = parseFloat(document.getElementById('c-limit').value) || 0;
+  if (!name) return;
+  state.categories.push({ id: Date.now(), name, limit });
+  save(); closeModal('modal-add-category');
+  document.getElementById('c-name').value = ''; document.getElementById('c-limit').value = '';
+  renderBudget(); populateExpenseCats();
+  toast('Category added!', '📊');
+}
+
+function addExpense() {
+  const desc = document.getElementById('e-desc').value.trim();
+  const amount = parseFloat(document.getElementById('e-amount').value) || 0;
+  if (!desc) return;
+  state.expenses.push({
+    id: Date.now(),
+    desc, category: document.getElementById('e-cat').value,
+    amount, status: document.getElementById('e-status').value,
+  });
+  save(); closeModal('modal-add-expense');
+  document.getElementById('e-desc').value = ''; document.getElementById('e-amount').value = '';
+  renderBudget(); renderDashboard();
+  toast('Expense added!', '💸');
+}
+
+function deleteExpense(id) {
+  state.expenses = state.expenses.filter(e => e.id !== id);
+  save(); renderBudget(); renderDashboard();
+}
+
+function populateExpenseCats() {
+  const sel = document.getElementById('e-cat');
+  sel.innerHTML = state.categories.map(c => `<option>${c.name}</option>`).join('') || '<option>General</option>';
+}
+
+function renderBudget() {
+  const total = state.event.budget || 0;
+  const spent = state.expenses.reduce((a,e) => a + e.amount, 0);
+  const remaining = total - spent;
+  const pct = total ? Math.round(spent/total*100) : 0;
+  const unpaid = state.expenses.filter(e => e.status !== 'paid').length;
+
+  document.getElementById('b-total').textContent = '$' + total.toLocaleString();
+  document.getElementById('b-total-sub').textContent = 'Set in Events';
+  document.getElementById('b-spent').textContent = '$' + spent.toLocaleString();
+  document.getElementById('b-spent-pct').textContent = pct + '% used';
+  document.getElementById('b-remaining').textContent = '$' + Math.max(0, remaining).toLocaleString();
+  document.getElementById('b-remaining-sub').textContent = `${unpaid} unpaid expenses`;
+  document.getElementById('b-remaining').style.color = remaining < 0 ? 'var(--danger)' : 'var(--success)';
+
+  // Categories
+  const catEl = document.getElementById('category-budgets');
+  if (!state.categories.length) {
+    catEl.innerHTML = '<p style="color:var(--muted);font-size:13px">No categories. Add one to track spending.</p>';
+  } else {
+    catEl.innerHTML = state.categories.map(c => {
+      const catSpent = state.expenses.filter(e => e.category === c.name).reduce((a,e)=>a+e.amount,0);
+      const catPct = c.limit ? Math.min(100, Math.round(catSpent/c.limit*100)) : 0;
+      const over = catSpent > c.limit && c.limit > 0;
+      return `
+        <div class="cat-budget-item">
+          <div class="cat-budget-header">
+            <span class="cat-budget-name">${c.name}</span>
+            <span class="cat-budget-nums" style="color:${over?'var(--danger)':'var(--muted)'}">
+              $${catSpent.toLocaleString()} / $${c.limit.toLocaleString()}${over?' ⚠️':''}
+            </span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" style="width:${catPct}%; background:${over?'var(--danger)':catPct>80?'var(--gold)':'var(--success)'}"></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Expenses table
+  const tbody = document.getElementById('expenses-tbody');
+  if (!state.expenses.length) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:28px">No expenses yet</td></tr>`;
+  } else {
+    tbody.innerHTML = state.expenses.map(e => `
+      <tr>
+        <td>${e.desc}</td>
+        <td style="color:var(--muted)">${e.category || 'General'}</td>
+        <td><strong style="color:var(--cream)">$${e.amount.toLocaleString()}</strong></td>
+        <td><span class="badge badge-${e.status}">${cap(e.status)}</span></td>
+        <td><button class="del-btn" onclick="deleteExpense(${e.id})">✕</button></td>
+      </tr>
+    `).join('');
+  }
+
+  populateExpenseCats();
+}
+
+// ===================== TASKS =====================
+let taskFilter = 'all';
+function setTaskFilter(f, el) {
+  taskFilter = f;
+  document.querySelectorAll('#page-tasks .filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderTasks();
+}
+
+function addTask() {
+  const name = document.getElementById('t-name').value.trim();
+  if (!name) return;
+  state.tasks.push({
+    id: Date.now(),
+    name, assignee: document.getElementById('t-assignee').value,
+    due: document.getElementById('t-due').value,
+    status: document.getElementById('t-status').value,
+  });
+  save(); closeModal('modal-add-task');
+  document.getElementById('t-name').value=''; document.getElementById('t-assignee').value=''; document.getElementById('t-due').value='';
+  renderTasks(); updateBadges(); renderDashboard();
+  toast('Task added!', '✅');
+}
+
+function toggleTaskStatus(id) {
+  const t = state.tasks.find(t=>t.id===id);
+  if (!t) return;
+  const cycle = { todo:'inprog', inprog:'done', done:'todo' };
+  t.status = cycle[t.status];
+  save(); renderTasks(); updateBadges(); renderDashboard();
+}
+
+function deleteTask(id) {
+  state.tasks = state.tasks.filter(t=>t.id!==id);
+  save(); renderTasks(); updateBadges(); renderDashboard();
+}
+
+function renderTasks() {
+  const buckets = { todo:[], inprog:[], done:[] };
+  state.tasks.forEach(t => { if(buckets[t.status]) buckets[t.status].push(t); });
+
+  const renderBucket = (tasks) => {
+    if (!tasks.length) return `<div style="color:var(--muted);font-size:13px;text-align:center;padding:16px">Empty</div>`;
+    return tasks.map(t => `
+      <div class="task-item">
+        <div class="task-checkbox ${t.status==='done'?'checked':''}" onclick="toggleTaskStatus(${t.id})">
+          ${t.status==='done'?'✓':''}
+        </div>
+        <div class="task-name ${t.status==='done'?'done':''}">${t.name}</div>
+        ${t.assignee ? `<span class="task-assignee">${t.assignee}</span>` : ''}
+        ${t.due ? `<span class="task-due">${new Date(t.due+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>` : ''}
+        <button class="del-btn" onclick="deleteTask(${t.id})">✕</button>
+      </div>
+    `).join('');
+  };
+
+  document.getElementById('tasks-todo').innerHTML = renderBucket(buckets.todo);
+  document.getElementById('tasks-inprog').innerHTML = renderBucket(buckets.inprog);
+  document.getElementById('tasks-done').innerHTML = renderBucket(buckets.done);
+
+  const done = state.tasks.filter(t=>t.status==='done').length;
+  const total = state.tasks.length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('task-pct').textContent = pct + '%';
+  document.getElementById('task-progress-bar').style.width = pct + '%';
+}
+
+// ===================== DASHBOARD =====================
+function renderDashboard() {
+  const total = state.guests.length;
+  const confirmed = state.guests.filter(g=>g.rsvp==='confirmed').length;
+  const declined = state.guests.filter(g=>g.rsvp==='declined').length;
+  const pending = total - confirmed - declined;
+  document.getElementById('dash-guests').textContent = total;
+  document.getElementById('dash-confirmed').textContent = confirmed + ' confirmed';
+
+  const spent = state.expenses.reduce((a,e)=>a+e.amount,0);
+  const bud = state.event.budget || 0;
+  document.getElementById('dash-budget').textContent = '$'+spent.toLocaleString();
+  document.getElementById('dash-budget-sub').textContent = 'of $'+bud.toLocaleString()+' total';
+
+  const done = state.tasks.filter(t=>t.status==='done').length;
+  const taskTotal = state.tasks.length;
+  const taskPct = taskTotal ? Math.round(done/taskTotal*100) : 0;
+  document.getElementById('dash-tasks').textContent = done+'/'+taskTotal;
+  document.getElementById('dash-tasks-sub').textContent = taskPct+'% complete';
+
+  const vConf = state.vendors.filter(v=>v.payment==='paid').length;
+  document.getElementById('dash-vendors').textContent = state.vendors.length;
+  document.getElementById('dash-vendors-sub').textContent = vConf + ' paid';
+
+  // RSVP donut
+  const circumference = 264;
+  const confPct = total ? confirmed/total : 0;
+  const decPct = total ? declined/total : 0;
+  const confOffset = circumference - (confPct * circumference);
+  const decOffset = circumference - (decPct * circumference);
+  document.getElementById('donut-confirmed').setAttribute('stroke-dashoffset', confOffset);
+  document.getElementById('donut-declined').setAttribute('stroke-dashoffset', decOffset);
+  document.getElementById('rsvp-confirmed-n').textContent = confirmed;
+  document.getElementById('rsvp-pending-n').textContent = pending;
+  document.getElementById('rsvp-declined-n').textContent = declined;
+
+  // Budget snapshot
+  const snap = document.getElementById('budget-snapshot');
+  if (bud > 0) {
+    const pct = Math.round(spent/bud*100);
+    snap.innerHTML = `
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:13px;color:var(--muted)">$${spent.toLocaleString()} of $${bud.toLocaleString()}</span>
+        <span style="font-size:13px;color:var(--gold);font-weight:600">${pct}%</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" style="width:${Math.min(100,pct)}%;background:${pct>90?'var(--danger)':pct>70?'var(--gold)':'var(--success)'}"></div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--muted)">$${Math.max(0,bud-spent).toLocaleString()} remaining</div>
+    `;
+  } else {
+    snap.innerHTML = '<p style="color:var(--muted);font-size:13px">Set a budget in Events & Themes.</p>';
+  }
+
+  // Timeline from tasks
+  const upcoming = state.tasks.filter(t=>t.due && t.status!=='done').sort((a,b)=>a.due.localeCompare(b.due)).slice(0,5);
+  const tl = document.getElementById('dashboard-timeline');
+  if (!upcoming.length) {
+    tl.innerHTML = `<div class="empty-state"><div class="es-icon">📅</div><h4>No upcoming tasks</h4><p>Add tasks with due dates</p></div>`;
+  } else {
+    tl.innerHTML = upcoming.map(t => `
+      <div class="tl-item">
+        <div class="tl-dot">${t.status==='inprog'?'⏳':'📌'}</div>
+        <div class="tl-content">
+          <div class="tl-title">${t.name}</div>
+          <div class="tl-desc">${t.assignee ? 'Assigned to: '+t.assignee : ''}</div>
+          <div class="tl-date">${new Date(t.due+'T12:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</div>
+        </div>
+        <span class="badge badge-${t.status==='todo'?'todo':'inprog'}">${t.status==='todo'?'To Do':'In Progress'}</span>
+      </div>
+    `).join('');
+  }
+}
+
+function updateBadges() {
+  document.getElementById('guest-count-badge').textContent = state.guests.length;
+  const pending = state.tasks.filter(t=>t.status!=='done').length;
+  document.getElementById('task-count-badge').textContent = pending;
+}
+
+// ===================== UTILS =====================
+function cap(s) { return s ? s.charAt(0).toUpperCase()+s.slice(1) : ''; }
+
+// ===================== AUTH SYSTEM =====================
+let currentUser = null;
+let regAvatarData = null;
+let regStep = 1;
+
+function getUsers() { return JSON.parse(localStorage.getItem('ss_users') || '{}'); }
+function saveUsers(u) { localStorage.setItem('ss_users', JSON.stringify(u)); }
+function getUserState(username) {
+  return JSON.parse(localStorage.getItem('ss_state_' + username) || 'null');
+}
+function saveUserState(username, s) {
+  localStorage.setItem('ss_state_' + username, JSON.stringify(s));
+}
+
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => {
+    t.classList.toggle('active', (tab==='login' && i===0)||(tab==='register' && i===1));
+  });
+  document.getElementById('auth-login').classList.toggle('active', tab==='login');
+  document.getElementById('auth-register').classList.toggle('active', tab==='register');
+  if (tab==='register') { regStep=1; showRegStep(1); }
+}
+
+function renderUserPills() {
+  const users = getUsers();
+  const wrap = document.getElementById('user-pills');
+  const keys = Object.keys(users);
+  if (!keys.length) { wrap.innerHTML=''; return; }
+  wrap.innerHTML = keys.map(u => {
+    const usr = users[u];
+    const av = usr.avatar ? `<img src="${usr.avatar}">` : '👤';
+    return `<div class="user-pill" onclick="selectUserPill('${u}', this)">
+      <div class="user-pill-avatar">${av}</div>
+      ${usr.preferredName || usr.firstName}
+    </div>`;
+  }).join('');
+}
+
+function selectUserPill(username, el) {
+  document.querySelectorAll('.user-pill').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('login-username').value = username;
+  document.getElementById('lp0').focus();
+}
+
+function getPasscode(prefix) {
+  return ['0','1','2','3'].map(i => document.getElementById(prefix+i).value).join('');
+}
+
+function doLogin() {
+  const username = document.getElementById('login-username').value.trim().toLowerCase();
+  const passcode = getPasscode('lp');
+  const errEl = document.getElementById('login-error');
+  const users = getUsers();
+  if (!users[username]) { errEl.classList.add('show'); return; }
+  if (users[username].passcode !== passcode) { errEl.classList.add('show'); return; }
+  errEl.classList.remove('show');
+  currentUser = users[username];
+  loadUserSession(username);
+}
+
+function loadUserSession(username) {
+  const users = getUsers();
+  currentUser = users[username];
+
+  // Load or initialise this user's event state
+  const saved = getUserState(username);
+  if (saved) {
+    state = saved;
+  } else {
+    state = {
+      event:{name:'',type:'Wedding',date:'',time:'18:00',venue:'',budget:0,theme:'elegant'},
+      guests:[], vendors:[], tasks:[], expenses:[], categories:[], menuOptions:['Chicken','Vegetarian','Vegan','Fish']
+    };
+    saveUserState(username, state);
+  }
+
+  // Override global save to scope to user
+  window._currentUsername = username;
+
+  // Hide overlay
+  document.getElementById('auth-overlay').style.display = 'none';
+
+  // Personalise UI
+  personaliseUI();
+
+  // Initialise app
+  appInit();
+}
+
+function personaliseUI() {
+  const u = currentUser;
+  const preferred = u.preferredName || u.firstName;
+  const av = u.avatar ? `<img src="${u.avatar}">` : '👤';
+
+  // Sidebar user widget
+  const widget = document.getElementById('sidebar-user-widget');
+  widget.style.display = 'flex';
+  document.getElementById('sidebar-avatar').innerHTML = av;
+  document.getElementById('sidebar-preferred-name').textContent = preferred;
+  document.getElementById('sidebar-username-handle').textContent = '@' + u.username;
+
+  // Topbar greeting
+  document.getElementById('topbar-greeting').textContent = 'Hello, ' + preferred + ' ✦';
+
+  // Welcome banner (injected into dashboard)
+  const age = u.birthday ? calcAge(u.birthday) : null;
+  const city = u.city || '';
+  const joined = u.joined ? new Date(u.joined).toLocaleDateString('en-US',{month:'long',year:'numeric'}) : '';
+  const timeGreet = getTimeGreeting();
+
+  document.getElementById('welcome-banner').innerHTML = `
+    <div class="welcome-avatar">${av}</div>
+    <div class="welcome-text">
+      <h3>${timeGreet}, ${preferred}!</h3>
+      <p>${u.occupation ? u.occupation + ' · ' : ''}${city}</p>
+    </div>
+    <div class="welcome-meta">
+      ${age ? `<div class="wm-city">🎂 ${age} years old</div>` : ''}
+      <div class="wm-member">Member since ${joined}</div>
+    </div>
+  `;
+
+  // Profile modal
+  const profileAv = document.getElementById('profile-avatar-lg');
+  profileAv.innerHTML = av;
+  const details = [
+    ['Full Name', u.firstName + ' ' + u.lastName],
+    ['Preferred Name', u.preferredName || '—'],
+    ['Username', '@' + u.username],
+    ['Email', u.email || '—'],
+    ['Birthday', u.birthday ? new Date(u.birthday+'T12:00').toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric'}) : '—'],
+    ['Age', age ? age + ' years old' : '—'],
+    ['City of Origin', u.city || '—'],
+    ['Phone', u.phone || '—'],
+    ['Occupation', u.occupation || '—'],
+    ['Member Since', joined],
+  ];
+  document.getElementById('profile-details').innerHTML = details.map(([k,v]) =>
+    `<div class="profile-detail-row"><span>${k}</span><span>${v}</span></div>`
+  ).join('');
+}
+
+function calcAge(dob) {
+  const today = new Date();
+  const birth = new Date(dob);
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
+}
+
+function getTimeGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+
+function doLogout() {
+  currentUser = null;
+  window._currentUsername = null;
+  closeModal('modal-profile');
+  document.getElementById('auth-overlay').style.display = 'flex';
+  document.getElementById('sidebar-user-widget').style.display = 'none';
+  ['lp0','lp1','lp2','lp3'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('login-username').value = '';
+  renderUserPills();
+  switchAuthTab('login');
+}
+
+// Override save to be user-scoped
+function save() {
+  if (window._currentUsername) {
+    saveUserState(window._currentUsername, state);
+  }
+}
+
+// ===== REGISTRATION =====
+function handleAvatarUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    regAvatarData = e.target.result;
+    const prev = document.getElementById('reg-avatar-preview');
+    prev.innerHTML = `<img src="${regAvatarData}">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function showRegStep(n) {
+  regStep = n;
+  [1,2,3].forEach(i => {
+    document.getElementById('reg-step-'+i).style.display = i===n ? 'block' : 'none';
+    const stepEl = document.getElementById('rs'+(i-1));
+    if (i < n) { stepEl.classList.add('done'); stepEl.classList.remove('active'); }
+    else if (i === n) { stepEl.classList.add('active'); stepEl.classList.remove('done'); }
+    else { stepEl.classList.remove('active','done'); }
+  });
+}
+
+function regNext(step) {
+  if (step === 1) {
+    const fn = document.getElementById('reg-firstname').value.trim();
+    const pn = document.getElementById('reg-preferred').value.trim();
+    const err = document.getElementById('reg-error-1');
+    if (!fn) { err.textContent='Please enter your first name.'; err.classList.add('show'); return; }
+    if (!pn) { err.textContent='Please enter your preferred name.'; err.classList.add('show'); return; }
+    err.classList.remove('show');
+    showRegStep(2);
+  } else if (step === 2) {
+    const un = document.getElementById('reg-username').value.trim().toLowerCase().replace(/\s+/g,'_');
+    const pc = getPasscode('rp');
+    const err = document.getElementById('reg-error-2');
+    const users = getUsers();
+    if (!un) { err.textContent='Please choose a username.'; err.classList.add('show'); return; }
+    if (users[un]) { err.textContent='That username is taken. Try another.'; err.classList.add('show'); return; }
+    if (pc.length < 4 || !/^\d{4}$/.test(pc)) { err.textContent='Please enter a 4-digit passcode.'; err.classList.add('show'); return; }
+    err.classList.remove('show');
+    showRegStep(3);
+  }
+}
+
+function regBack(step) { showRegStep(step - 1); }
+
+function completeRegistration() {
+  const err = document.getElementById('reg-error-3');
+  const un = document.getElementById('reg-username').value.trim().toLowerCase().replace(/\s+/g,'_');
+  const newUser = {
+    username: un,
+    passcode: getPasscode('rp'),
+    firstName: document.getElementById('reg-firstname').value.trim(),
+    lastName: document.getElementById('reg-lastname').value.trim(),
+    preferredName: document.getElementById('reg-preferred').value.trim(),
+    email: document.getElementById('reg-email').value.trim(),
+    birthday: document.getElementById('reg-birthday').value,
+    city: document.getElementById('reg-city').value.trim(),
+    phone: document.getElementById('reg-phone').value.trim(),
+    occupation: document.getElementById('reg-occupation').value.trim(),
+    source: document.getElementById('reg-source').value,
+    avatar: regAvatarData || null,
+    joined: new Date().toISOString().split('T')[0],
+  };
+  const users = getUsers();
+  users[un] = newUser;
+  saveUsers(users);
+  toast('Account created! Welcome, ' + newUser.preferredName + '!', '🎉');
+  setTimeout(() => { currentUser = newUser; loadUserSession(un); }, 600);
+}
+
+// Setup passcode digit auto-advance
+function setupPasscodeInputs(prefix) {
+  [0,1,2,3].forEach(i => {
+    const el = document.getElementById(prefix+i);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      if (el.value.length === 1 && i < 3) document.getElementById(prefix+(i+1)).focus();
+    });
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !el.value && i > 0) document.getElementById(prefix+(i-1)).focus();
+    });
+  });
+}
+
+// ===================== INIT =====================
+function appInit() {
+  updateSidebarEvent();
+  renderDashboard();
+  updateBadges();
+  renderMenuOptions();
+  populateExpenseCats();
+}
+
+function init() {
+  // Setup passcode inputs
+  setupPasscodeInputs('lp');
+  setupPasscodeInputs('rp');
+
+  // Render user pills for quick login
+  renderUserPills();
+
+  // Check if a session exists
+  const lastUser = localStorage.getItem('ss_last_user');
+  if (lastUser) {
+    const users = getUsers();
+    if (users[lastUser]) {
+      document.getElementById('login-username').value = lastUser;
+      selectUserPill(lastUser, document.querySelector('.user-pill') || document.createElement('div'));
+    }
+  }
+}
+
+init();
+
+function selectUmemulo() {
+  state.event.theme = 'umemulo';
+  save();
+  closeModal('modal-umemulo');
+  navigate('events', document.querySelectorAll('.nav-item')[1]);
+  setTimeout(() => {
+    renderThemes();
+    toast('Umemulo Special selected. Bayede! 🙌', '✦');
+  }, 100);
+}
+</script>
+
+<!-- ===== UMEMULO CULTURAL STORY MODAL ===== -->
+<div class="modal-overlay" id="modal-umemulo">
+  <div class="modal" style="max-width:600px; padding:0; overflow:hidden; border-color:rgba(196,140,60,0.35)">
+    <div style="height:200px; overflow:hidden; position:relative">
+      <img src="https://images.unsplash.com/photo-1580746738099-b2d00b39cee5?w=800&h=320&fit=crop&auto=format"
+        style="width:100%;height:100%;object-fit:cover;display:block"
+        onerror="this.style.background='linear-gradient(135deg,#2C1A0E,#8B3A1A,#C48C3C)';this.style.display='block'">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(14,8,2,0.9) 0%,rgba(0,0,0,0.2) 60%)"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:22px 28px">
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:2.5px;color:rgba(255,255,255,0.6);margin-bottom:4px">Zulu Heritage ✦ Curated Theme</div>
+        <div style="font-family:'Playfair Display',serif;font-size:26px;color:#F5EDD8;line-height:1.2">Umemulo Special</div>
+        <div style="font-size:12px;color:rgba(245,237,216,0.65);margin-top:4px;font-style:italic">"The ceremony that turns a girl into a woman"</div>
+      </div>
+    </div>
+    <div style="padding:28px 30px 24px; overflow-y:auto; max-height:480px">
+
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
+        <div style="flex:1;height:1px;background:rgba(196,140,60,0.2)"></div>
+        <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#C48C3C;font-weight:600">The Story</span>
+        <div style="flex:1;height:1px;background:rgba(196,140,60,0.2)"></div>
+      </div>
+
+      <p style="font-size:14px;line-height:1.85;color:var(--text);margin-bottom:18px">
+        <strong style="color:#E8D5A3;font-family:'Playfair Display',serif">Umemulo</strong> is one of the most sacred rites of passage in Zulu culture — a ceremony that publicly celebrates a young woman's transition from girlhood (intombi) into full womanhood. Rooted in centuries of tradition, it is not merely a party but a profound spiritual and communal act of recognition, gratitude, and blessing.
+      </p>
+
+      <p style="font-size:14px;line-height:1.85;color:var(--text);margin-bottom:18px">
+        Traditionally, the ceremony is held when a young woman reaches her early twenties or when her family determines she is ready. The homestead comes alive with the sound of <em style="color:#E8D5A3">izigqi</em> — rhythmic chanting and drumming — as women from the community gather to ululate and sing praise songs honouring the young woman's spirit. The air carries the scent of burning imphepho, the sacred incense used to call upon the ancestors, for <strong style="color:#E8D5A3;font-family:'Playfair Display',serif">no Zulu celebration is complete without the presence of the amadlozi</strong> — the ancestral spirits who watch over the living.
+      </p>
+
+      <div style="background:rgba(196,140,60,0.08);border-left:3px solid #C48C3C;border-radius:0 8px 8px 0;padding:14px 18px;margin:20px 0">
+        <div style="font-family:'Playfair Display',serif;font-size:15px;color:#E8D5A3;font-style:italic;line-height:1.6">
+          "Bayede, Nkosi yamakhosi — Hail to the queen of queens."
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px">Traditional Zulu praise — spoken as the young woman is presented to her community</div>
+      </div>
+
+      <p style="font-size:14px;line-height:1.85;color:var(--text);margin-bottom:18px">
+        The young woman adorns herself in layers of intricate <strong style="color:#E8D5A3">Zulu beadwork</strong> — each colour carrying meaning. Red speaks of love and strong emotion; white honours purity and the ancestors; green speaks of new life; yellow of wealth and fertility. She wears the <em style="color:#E8D5A3">isidwaba</em>, a dark leather skirt, and her body is anointed with red ochre (<em style="color:#E8D5A3">ibomvu</em>) and white clay (<em style="color:#E8D5A3">isishamu</em>), marking her as consecrated — set apart and seen.
+      </p>
+
+      <p style="font-size:14px;line-height:1.85;color:var(--text);margin-bottom:18px">
+        A beast — most often a goat or cow — is slaughtered in her honour. This is not taken lightly. The animal's blood feeds the earth and speaks to the ancestors on her behalf: <strong style="color:#E8D5A3;font-family:'Playfair Display',serif">"This daughter is seen. This daughter is honoured. This daughter is ready."</strong> She then presents <em style="color:#E8D5A3">utshwala</em> — traditional sorghum beer — to the elders seated in reverence, bowing in humility before those who have walked longer on this earth.
+      </p>
+
+      <div style="display:flex;align-items:center;gap:8px;margin:22px 0 18px">
+        <div style="flex:1;height:1px;background:rgba(196,140,60,0.2)"></div>
+        <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#C48C3C;font-weight:600">The Palette</span>
+        <div style="flex:1;height:1px;background:rgba(196,140,60,0.2)"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px">
+        <div style="text-align:center">
+          <div style="width:100%;height:44px;border-radius:8px;background:#C48C3C;margin-bottom:5px"></div>
+          <div style="font-size:10px;color:var(--muted)">Ochre</div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:100%;height:44px;border-radius:8px;background:#8B3A1A;margin-bottom:5px"></div>
+          <div style="font-size:10px;color:var(--muted)">Ibomvu</div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:100%;height:44px;border-radius:8px;background:#E8D5A3;margin-bottom:5px"></div>
+          <div style="font-size:10px;color:var(--muted)">Isishamu</div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:100%;height:44px;border-radius:8px;background:#2C1A0E;margin-bottom:5px"></div>
+          <div style="font-size:10px;color:var(--muted)">Isidwaba</div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:100%;height:44px;border-radius:8px;background:#F5EDD8;border:1px solid rgba(255,255,255,0.1);margin-bottom:5px"></div>
+          <div style="font-size:10px;color:var(--muted)">Ivory</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin:22px 0 18px">
+        <div style="flex:1;height:1px;background:rgba(196,140,60,0.2)"></div>
+        <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#C48C3C;font-weight:600">Theme Touches</span>
+        <div style="flex:1;height:1px;background:rgba(196,140,60,0.2)"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px">
+        <div style="background:rgba(196,140,60,0.07);border:1px solid rgba(196,140,60,0.15);border-radius:10px;padding:13px">
+          <div style="font-size:18px;margin-bottom:6px">📿</div>
+          <div style="font-size:12px;font-weight:600;color:#E8D5A3;margin-bottom:3px">Beaded Invitations</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5">Zulu beadwork-inspired borders and colour codes woven into your digital invite</div>
+        </div>
+        <div style="background:rgba(196,140,60,0.07);border:1px solid rgba(196,140,60,0.15);border-radius:10px;padding:13px">
+          <div style="font-size:18px;margin-bottom:6px">🪘</div>
+          <div style="font-size:12px;font-weight:600;color:#E8D5A3;margin-bottom:3px">Ancestral Warmth</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5">Earth tones, firelight ochre & ivory — a palette that honours lineage</div>
+        </div>
+        <div style="background:rgba(196,140,60,0.07);border:1px solid rgba(196,140,60,0.15);border-radius:10px;padding:13px">
+          <div style="font-size:18px;margin-bottom:6px">🐂</div>
+          <div style="font-size:12px;font-weight:600;color:#E8D5A3;margin-bottom:3px">Isigodi Setting</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5">Homestead-inspired layout — communal, grounded, deeply intentional</div>
+        </div>
+        <div style="background:rgba(196,140,60,0.07);border:1px solid rgba(196,140,60,0.15);border-radius:10px;padding:13px">
+          <div style="font-size:18px;margin-bottom:6px">🌾</div>
+          <div style="font-size:12px;font-weight:600;color:#E8D5A3;margin-bottom:3px">Utshwala Menu</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5">Traditional menu suggestions: samp, amadumbe, umngqusho & more</div>
+        </div>
+      </div>
+
+      <p style="font-size:12px;color:var(--muted);line-height:1.7;font-style:italic;text-align:center;border-top:1px solid var(--border);padding-top:16px">
+        This theme is curated with deep respect for Zulu heritage and the women whose ceremonies have carried this tradition for generations. <strong style="color:#C48C3C">Bayede.</strong>
+      </p>
+
+      <div style="display:flex;gap:10px;margin-top:18px">
+        <button class="btn btn-ghost" style="flex:1" onclick="closeModal('modal-umemulo')">Close</button>
+        <button class="btn" style="flex:1;background:#C48C3C;color:#1A0D00;font-weight:700" onclick="selectUmemulo()">Use This Theme ✦</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

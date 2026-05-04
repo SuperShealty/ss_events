@@ -1,0 +1,75 @@
+/* Base Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header Styles */
+header {
+    background-color: #0044cc;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Section Styles */
+section {
+    padding: 20px;
+}
+
+/* Event Section Styles */
+event {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    header {
+        font-size: 1.2em;
+    }
+
+    section {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        font-size: 1em;
+    }
+
+    event {
+        padding: 10px;
+    }
+}
+
+/* Accessibility Features */
+a {
+    color: #0044cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Variables for Consistency */
+:root {
+    --primary-color: #0044cc;
+    --background-color: #f9f9f9;
+    --text-color: #333;
+}
+
+/* Applying Variables */
+header {
+    background-color: var(--primary-color);
+}
+
+section {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}

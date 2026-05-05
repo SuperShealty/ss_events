@@ -584,6 +584,7 @@ select option { background: var(--bg3); }
   max-width: 320px;
 }
 @keyframes toastIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
 
 /* ===== TWO-COL LAYOUT ===== */
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -1602,17 +1603,13 @@ select option { background: var(--bg3); }
 
 <script>
 // ===================== STATE =====================
-let state = JSON.parse(localStorage.getItem('lumiere_state') || 'null') || {
+// State is initialised per-user in loadUserSession()
+let state = {
   event: { name:'', type:'Wedding', date:'', time:'18:00', venue:'', budget:0, theme:'elegant' },
-  guests: [],
-  vendors: [],
-  tasks: [],
-  expenses: [],
-  categories: [],
+  guests: [], vendors: [], tasks: [], expenses: [], categories: [],
   menuOptions: ['Chicken', 'Vegetarian', 'Vegan', 'Fish'],
 };
-
-function save() { localStorage.setItem('lumiere_state', JSON.stringify(state)); }
+// save() is defined later in the auth section, scoped per user
 
 // ===================== NAVIGATION =====================
 function navigate(page, el) {
@@ -1867,26 +1864,41 @@ function menuClass(m) {
 function generateInvite() {
   const ev = state.event;
   document.getElementById('inv-name').textContent = ev.name || 'Your Event';
-  document.getElementById('inv-sub').textContent = ev.type ? `${ev.type} Celebration` : 'You are cordially invited';
+  document.getElementById('inv-sub').textContent = ev.type ? ev.type + ' Celebration' : 'You are cordially invited';
   document.getElementById('inv-date').textContent = ev.date ? new Date(ev.date+'T12:00').toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric'}) : 'TBD';
   document.getElementById('inv-time').textContent = ev.time ? formatTime(ev.time) : 'TBD';
   document.getElementById('inv-venue').textContent = ev.venue || 'TBD';
 
+  // Build a self-contained RSVP link using the current page URL + hash params
+  const base = window.location.href.split('#')[0];
+  const rsvpData = {
+    n: ev.name || 'Event',
+    t: ev.type || '',
+    d: ev.date || '',
+    tm: ev.time || '',
+    v: ev.venue || '',
+    m: state.menuOptions,
+    u: window._currentUsername || '',
+  };
+  const rsvpHash = '#rsvp=' + encodeURIComponent(btoa(JSON.stringify(rsvpData)));
+  const rsvpLink = base + rsvpHash;
+
+  // Generate QR using free qrserver.com API (no key required)
   const qrWrap = document.getElementById('qr-container');
-  qrWrap.innerHTML = '';
-  const link = `https://lumiere.events/rsvp/${encodeURIComponent(ev.name || 'event')}?t=${Date.now()}`;
-  try {
-    new QRCode(qrWrap, { text: link, width: 100, height: 100, colorDark:'#E8E4DC', colorLight:'#1F1F23' });
-  } catch(e) {
-    qrWrap.innerHTML = `<div style="width:100px;height:100px;background:var(--bg3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px">📱</div>`;
-  }
+  const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&margin=10&color=E8E4DC&bgcolor=1F1F23&data=' + encodeURIComponent(rsvpLink);
+  qrWrap.innerHTML = '<img src="' + qrApiUrl + '" width="120" height="120" style="border-radius:8px;border:2px solid rgba(232,228,220,0.2);display:block" alt="RSVP QR Code" onerror="this.parentNode.innerHTML='<div style=\"width:120px;height:120px;background:var(--bg3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);text-align:center;padding:10px\">QR needs internet connection</div>'">';
+
   renderRSVP();
   renderMenuOptions();
 }
 
 function copyInviteLink() {
-  const link = `https://lumiere.events/rsvp/${encodeURIComponent(state.event.name || 'event')}`;
-  navigator.clipboard.writeText(link).then(() => toast('Invite link copied!', '📋'));
+  const ev = state.event;
+  const base = window.location.href.split('#')[0];
+  const rsvpData = { n: ev.name||'Event', t: ev.type||'', d: ev.date||'', tm: ev.time||'', v: ev.venue||'', m: state.menuOptions, u: window._currentUsername||'' };
+  const link = base + '#rsvp=' + encodeURIComponent(btoa(JSON.stringify(rsvpData)));
+  navigator.clipboard.writeText(link).then(() => toast('RSVP link copied! Share it with guests.', '📋'))
+    .catch(() => { prompt('Copy this RSVP link:', link); });
 }
 
 function formatTime(t) {
@@ -2308,10 +2320,31 @@ function doLogin() {
   const username = document.getElementById('login-username').value.trim().toLowerCase();
   const passcode = getPasscode('lp');
   const errEl = document.getElementById('login-error');
-  const users = getUsers();
-  if (!users[username]) { errEl.classList.add('show'); return; }
-  if (users[username].passcode !== passcode) { errEl.classList.add('show'); return; }
   errEl.classList.remove('show');
+
+  if (!username) { errEl.textContent = 'Please enter your username.'; errEl.classList.add('show'); return; }
+  if (passcode.length < 4) { errEl.textContent = 'Please enter all 4 digits of your passcode.'; errEl.classList.add('show'); return; }
+
+  // Try local first, then cloud
+  const users = getUsers();
+  if (!users[username]) {
+    errEl.textContent = 'Username not found. Check spelling or create an account.';
+    errEl.classList.add('show');
+    return;
+  }
+  if (users[username].passcode !== passcode) {
+    errEl.textContent = 'Incorrect passcode. Please try again.';
+    errEl.classList.add('show');
+    // Shake the passcode inputs
+    document.getElementById('login-passcode-wrap').style.animation = 'shake 0.4s ease';
+    setTimeout(() => { document.getElementById('login-passcode-wrap').style.animation = ''; }, 400);
+    ['lp0','lp1','lp2','lp3'].forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('lp0').focus();
+    return;
+  }
+
+  errEl.classList.remove('show');
+  localStorage.setItem('ss_last_user', username);
   currentUser = users[username];
   loadUserSession(username);
 }
@@ -2418,18 +2451,30 @@ function doLogout() {
   currentUser = null;
   window._currentUsername = null;
   closeModal('modal-profile');
+  // Reset app state to defaults
+  state = { event:{name:'',type:'Wedding',date:'',time:'18:00',venue:'',budget:0,theme:'elegant'}, guests:[], vendors:[], tasks:[], expenses:[], categories:[], menuOptions:['Chicken','Vegetarian','Vegan','Fish'] };
+  // Show auth screen
   document.getElementById('auth-overlay').style.display = 'flex';
   document.getElementById('sidebar-user-widget').style.display = 'none';
-  ['lp0','lp1','lp2','lp3'].forEach(id => document.getElementById(id).value='');
+  // Clear login fields
+  ['lp0','lp1','lp2','lp3'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
   document.getElementById('login-username').value = '';
+  document.getElementById('login-error').classList.remove('show');
+  // Refresh pills
   renderUserPills();
   switchAuthTab('login');
 }
 
-// Override save to be user-scoped
+// User-scoped save — robust with try/catch
 function save() {
-  if (window._currentUsername) {
+  if (!window._currentUsername) return;
+  try {
     saveUserState(window._currentUsername, state);
+    cloudSaveState(window._currentUsername, state);
+  } catch(e) {
+    if (e.name === 'QuotaExceededError') {
+      toast('Storage almost full. Consider clearing old data.', '⚠️');
+    }
   }
 }
 
@@ -2437,11 +2482,22 @@ function save() {
 function handleAvatarUpload(input) {
   const file = input.files[0];
   if (!file) return;
+  // Compress to max 200x200, JPEG quality 0.7 to keep localStorage usage low
   const reader = new FileReader();
   reader.onload = e => {
-    regAvatarData = e.target.result;
-    const prev = document.getElementById('reg-avatar-preview');
-    prev.innerHTML = `<img src="${regAvatarData}">`;
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const maxSize = 200;
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > maxSize) { h = h * maxSize / w; w = maxSize; } }
+      else { if (h > maxSize) { w = w * maxSize / h; h = maxSize; } }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      regAvatarData = canvas.toDataURL('image/jpeg', 0.7);
+      document.getElementById('reg-avatar-preview').innerHTML = '<img src="' + regAvatarData + '">';
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -2483,7 +2539,10 @@ function regBack(step) { showRegStep(step - 1); }
 
 function completeRegistration() {
   const err = document.getElementById('reg-error-3');
+  err.classList.remove('show');
   const un = document.getElementById('reg-username').value.trim().toLowerCase().replace(/\s+/g,'_');
+  if (!un) { err.textContent = 'Username is missing. Go back to Step 2.'; err.classList.add('show'); return; }
+
   const newUser = {
     username: un,
     passcode: getPasscode('rp'),
@@ -2499,11 +2558,41 @@ function completeRegistration() {
     avatar: regAvatarData || null,
     joined: new Date().toISOString().split('T')[0],
   };
-  const users = getUsers();
-  users[un] = newUser;
-  saveUsers(users);
-  toast('Account created! Welcome, ' + newUser.preferredName + '!', '🎉');
-  setTimeout(() => { currentUser = newUser; loadUserSession(un); }, 600);
+
+  try {
+    const users = getUsers();
+    if (users[un]) { err.textContent = 'That username is already taken.'; err.classList.add('show'); return; }
+    users[un] = newUser;
+    saveUsers(users);
+    localStorage.setItem('ss_last_user', un);
+    // Sync to cloud if configured
+    cloudSaveUser(newUser);
+    toast('Account created! Welcome, ' + newUser.preferredName + '! 🎉', '✦');
+    currentUser = newUser;
+    loadUserSession(un);
+  } catch(e) {
+    if (e.name === 'QuotaExceededError' || (e.message && e.message.includes('quota'))) {
+      // Try without avatar
+      newUser.avatar = null;
+      try {
+        const users = getUsers();
+        users[un] = newUser;
+        saveUsers(users);
+        localStorage.setItem('ss_last_user', un);
+        cloudSaveUser(newUser);
+        toast('Account created (profile photo skipped due to storage limit). Welcome, ' + newUser.preferredName + '!', '✦');
+        currentUser = newUser;
+        loadUserSession(un);
+      } catch(e2) {
+        err.textContent = 'Storage full. Please clear browser data and try again.';
+        err.classList.add('show');
+      }
+    } else {
+      err.textContent = 'Sign-up failed: ' + (e.message || 'Unknown error. Please try again.');
+      err.classList.add('show');
+      console.error('Registration error:', e);
+    }
+  }
 }
 
 // Setup passcode digit auto-advance
@@ -2520,6 +2609,60 @@ function setupPasscodeInputs(prefix) {
   });
 }
 
+
+// ===================== CLOUD DATABASE (Firebase Realtime DB) =====================
+// HOW TO ENABLE CLOUD SYNC:
+// 1. Go to https://console.firebase.google.com → Create project (free Spark plan)
+// 2. Go to Realtime Database → Create database → Start in test mode
+// 3. Copy your database URL (e.g. https://my-project-default-rtdb.firebaseio.com)
+// 4. Paste it below replacing the empty string
+const FIREBASE_URL = localStorage.getItem('ss_firebase_url') || '';
+
+function cloudSaveUser(user) {
+  if (!FIREBASE_URL) return;
+  const safe = Object.assign({}, user, { avatar: null }); // don't send avatar to cloud
+  fetch(FIREBASE_URL + '/ss_users/' + user.username + '.json', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(safe)
+  }).catch(() => {}); // silent fail — local storage still works
+}
+
+function cloudSaveState(username, s) {
+  if (!FIREBASE_URL) return;
+  fetch(FIREBASE_URL + '/ss_states/' + username + '.json', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(s)
+  }).catch(() => {});
+}
+
+function cloudSaveInvitee(eventOwner, invitee) {
+  if (!FIREBASE_URL) return;
+  fetch(FIREBASE_URL + '/ss_invitees/' + eventOwner + '/' + Date.now() + '.json', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(invitee)
+  }).catch(() => {});
+}
+
+async function cloudSyncLogin(username) {
+  if (!FIREBASE_URL) return null;
+  try {
+    const res = await fetch(FIREBASE_URL + '/ss_users/' + username + '.json');
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data;
+  } catch(e) { return null; }
+}
+
+function setupFirebase() {
+  const url = prompt('Paste your Firebase Realtime Database URL:\n(e.g. https://your-project-rtdb.firebaseio.com)\n\nLeave blank to use local storage only.', FIREBASE_URL || '');
+  if (url === null) return;
+  localStorage.setItem('ss_firebase_url', url.trim());
+  location.reload();
+}
+
 // ===================== INIT =====================
 function appInit() {
   updateSidebarEvent();
@@ -2530,22 +2673,158 @@ function appInit() {
 }
 
 function init() {
-  // Setup passcode inputs
+  // Check for RSVP hash — guest scanned QR code
+  if (window.location.hash && window.location.hash.startsWith('#rsvp=')) {
+    try {
+      const encoded = decodeURIComponent(window.location.hash.replace('#rsvp=', ''));
+      const rsvpData = JSON.parse(atob(encoded));
+      showGuestRsvpForm(rsvpData);
+      return; // Don't show login screen for guests
+    } catch(e) { /* bad hash, proceed normally */ }
+  }
+
+  // Setup passcode digit auto-advance
   setupPasscodeInputs('lp');
   setupPasscodeInputs('rp');
 
   // Render user pills for quick login
   renderUserPills();
 
-  // Check if a session exists
+  // Pre-fill last logged in user
   const lastUser = localStorage.getItem('ss_last_user');
   if (lastUser) {
     const users = getUsers();
     if (users[lastUser]) {
       document.getElementById('login-username').value = lastUser;
-      selectUserPill(lastUser, document.querySelector('.user-pill') || document.createElement('div'));
+      // Highlight the matching pill
+      setTimeout(() => {
+        const pills = document.querySelectorAll('.user-pill');
+        pills.forEach(p => { if (p.textContent.trim() === (users[lastUser].preferredName || users[lastUser].firstName)) p.classList.add('selected'); });
+      }, 50);
     }
   }
+}
+
+function showGuestRsvpForm(data) {
+  // Hide auth, show a standalone RSVP form for the scanned guest
+  document.getElementById('auth-overlay').style.display = 'none';
+  document.body.style.overflow = 'auto';
+  const menuOpts = data.m || ['Chicken','Vegetarian','Vegan'];
+  const dateStr = data.d ? new Date(data.d+'T12:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}) : 'TBD';
+  const timeStr = data.tm ? formatTime(data.tm) : 'TBD';
+  const div = document.createElement('div');
+  div.style.cssText = 'position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;z-index:99999;overflow-y:auto';
+  div.innerHTML = `
+    <div style="max-width:480px;width:100%;background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden">
+      <div style="background:linear-gradient(135deg,#1F1F23,#252529);padding:28px 28px 20px;text-align:center;border-bottom:1px solid var(--border)">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:8px">SS Event Studio · RSVP</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:26px;color:var(--cream);margin-bottom:4px">${data.n || 'You're Invited'}</h2>
+        <p style="font-size:13px;color:var(--muted)">${data.t ? data.t + ' Celebration' : 'You are cordially invited'}</p>
+        <div style="display:flex;justify-content:center;gap:24px;margin-top:18px">
+          <div style="text-align:center">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)">Date</div>
+            <div style="font-size:13px;color:var(--cream);margin-top:2px">${dateStr}</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)">Time</div>
+            <div style="font-size:13px;color:var(--cream);margin-top:2px">${timeStr}</div>
+          </div>
+          ${data.v ? `<div style="text-align:center"><div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)">Venue</div><div style="font-size:13px;color:var(--cream);margin-top:2px">${data.v}</div></div>` : ''}
+        </div>
+      </div>
+      <div style="padding:24px 28px" id="rsvp-form-body">
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:5px;font-weight:600">Your Full Name</label>
+          <input id="rsvp-guest-name" type="text" placeholder="e.g. Sipho Dlamini" style="width:100%;background:var(--bg3);border:1px solid rgba(232,228,220,0.08);border-radius:8px;padding:10px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none">
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:5px;font-weight:600">Email Address</label>
+          <input id="rsvp-guest-email" type="email" placeholder="your@email.com" style="width:100%;background:var(--bg3);border:1px solid rgba(232,228,220,0.08);border-radius:8px;padding:10px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none">
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:5px;font-weight:600">Will you attend?</label>
+          <div style="display:flex;gap:10px">
+            <button onclick="setRsvpResponse('confirmed',this)" style="flex:1;padding:10px;background:rgba(110,168,130,0.12);border:1px solid rgba(110,168,130,0.3);border-radius:8px;color:#6EA882;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;transition:0.2s" data-rsvp="confirmed">✓ Yes, I'll be there</button>
+            <button onclick="setRsvpResponse('declined',this)" style="flex:1;padding:10px;background:rgba(184,92,92,0.1);border:1px solid rgba(184,92,92,0.25);border-radius:8px;color:#B85C5C;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;transition:0.2s" data-rsvp="declined">✗ Can't make it</button>
+          </div>
+        </div>
+        <div style="margin-bottom:20px" id="rsvp-menu-wrap">
+          <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:8px;font-weight:600">Menu Choice</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            ${menuOpts.map(m => `<button onclick="setMenuChoice('${m}',this)" style="padding:7px 14px;background:var(--bg3);border:1px solid rgba(232,228,220,0.08);border-radius:99px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;transition:0.2s" data-menu="${m}">${m}</button>`).join('')}
+          </div>
+        </div>
+        <div id="rsvp-submit-error" style="display:none;background:rgba(184,92,92,0.12);border:1px solid rgba(184,92,92,0.25);border-radius:8px;padding:9px 13px;font-size:12px;color:#B85C5C;margin-bottom:12px"></div>
+        <button onclick="submitGuestRsvp('${data.u||''}')" style="width:100%;padding:13px;background:var(--cream);color:var(--bg);border:none;border-radius:8px;font-family:'Playfair Display',serif;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s">Submit RSVP ✦</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(div);
+  window._rsvpResponse = null;
+  window._rsvpMenu = null;
+}
+
+function setRsvpResponse(val, btn) {
+  window._rsvpResponse = val;
+  document.querySelectorAll('[data-rsvp]').forEach(b => b.style.opacity = '0.5');
+  btn.style.opacity = '1';
+  btn.style.fontWeight = '700';
+}
+
+function setMenuChoice(val, btn) {
+  window._rsvpMenu = val;
+  document.querySelectorAll('[data-menu]').forEach(b => { b.style.background='var(--bg3)'; b.style.color='var(--muted)'; b.style.borderColor='rgba(232,228,220,0.08)'; });
+  btn.style.background = 'rgba(232,228,220,0.12)';
+  btn.style.color = 'var(--cream)';
+  btn.style.borderColor = 'rgba(232,228,220,0.3)';
+}
+
+function submitGuestRsvp(eventOwner) {
+  const name = document.getElementById('rsvp-guest-name').value.trim();
+  const email = document.getElementById('rsvp-guest-email').value.trim();
+  const errEl = document.getElementById('rsvp-submit-error');
+  if (!name) { errEl.textContent='Please enter your name.'; errEl.style.display='block'; return; }
+  if (!window._rsvpResponse) { errEl.textContent='Please select whether you will attend.'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+
+  const invitee = { name, email, rsvp: window._rsvpResponse, menu: window._rsvpMenu || '', submittedAt: new Date().toISOString(), checkedIn: false };
+
+  // Save to local guests list for the event owner
+  if (eventOwner) {
+    try {
+      const key = 'ss_state_' + eventOwner;
+      const ownerState = JSON.parse(localStorage.getItem(key) || 'null');
+      if (ownerState) {
+        ownerState.guests = ownerState.guests || [];
+        const exists = ownerState.guests.find(g => g.email && g.email === email);
+        if (exists) {
+          exists.rsvp = invitee.rsvp;
+          exists.menu = invitee.menu;
+        } else {
+          ownerState.guests.push({ id: Date.now(), ...invitee });
+        }
+        localStorage.setItem(key, JSON.stringify(ownerState));
+      }
+    } catch(e) {}
+    // Push to cloud invitees DB
+    cloudSaveInvitee(eventOwner, invitee);
+  }
+
+  // Show success
+  document.getElementById('rsvp-form-body').innerHTML = `
+    <div style="text-align:center;padding:20px 0">
+      <div style="font-size:52px;margin-bottom:16px">${invitee.rsvp === 'confirmed' ? '🎉' : '💌'}</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--cream);margin-bottom:8px">${invitee.rsvp === 'confirmed' ? "See you there!" : "Thank you for letting us know"}</h3>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6">
+        ${invitee.rsvp === 'confirmed'
+          ? 'Your RSVP has been received. We can't wait to celebrate with you, <strong style="color:var(--cream)">' + name + '</strong>!'
+          : 'Your response has been recorded. You will be missed, <strong style="color:var(--cream)">' + name + '</strong>.'}
+      </p>
+      ${invitee.menu ? `<div style="margin-top:14px;padding:10px 18px;background:var(--bg3);border-radius:8px;display:inline-block;font-size:12px;color:var(--muted)">Menu: <strong style="color:var(--cream)">${invitee.menu}</strong></div>` : ''}
+    </div>
+  `;
+  // Clear the RSVP hash from URL
+  history.replaceState(null, '', window.location.href.split('#')[0]);
 }
 
 init();

@@ -42,605 +42,11 @@ body {
   overflow: hidden;
 }
 
-/* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--gold3); border-radius: 4px; }
 
-/* ===== SIDEBAR ===== */
-.sidebar {
-  width: 240px;
-  min-width: 240px;
-  background: var(--bg2);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  position: relative;
-  z-index: 10;
-}
-
-.sidebar-logo {
-  padding: 28px 24px 20px;
-  border-bottom: 1px solid var(--border);
-}
-.sidebar-logo h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  color: var(--gold);
-  letter-spacing: 0.5px;
-}
-.sidebar-logo span {
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.sidebar-section {
-  padding: 16px 12px 4px;
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  font-weight: 600;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 16px;
-  margin: 2px 8px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--muted);
-  border: 1px solid transparent;
-  position: relative;
-}
-.nav-item:hover { background: var(--panel); color: var(--text); }
-.nav-item.active {
-  background: linear-gradient(135deg, rgba(232,228,220,0.08), rgba(232,228,220,0.03));
-  color: var(--gold);
-  border-color: var(--border);
-  font-weight: 500;
-}
-.nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
-.nav-badge {
-  margin-left: auto;
-  background: var(--gold);
-  color: var(--bg);
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 99px;
-}
-
-.sidebar-footer {
-  margin-top: auto;
-  padding: 16px;
-  border-top: 1px solid var(--border);
-}
-.event-selector {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-.event-selector:hover { border-color: var(--gold); }
-.event-selector .es-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-.event-selector .es-name { font-size: 14px; color: var(--cream); font-weight: 500; margin-top: 2px; }
-.event-selector .es-date { font-size: 12px; color: var(--gold); margin-top: 1px; }
-
-/* ===== MAIN ===== */
-.main {
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ===== TOPBAR ===== */
-.topbar {
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border);
-  padding: 16px 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 9;
-}
-.topbar h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--cream);
-}
-.topbar-actions { display: flex; gap: 10px; align-items: center; }
-
-/* ===== BUTTONS ===== */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 18px;
-  border-radius: var(--radius-sm);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s;
-}
-.btn-gold {
-  background: linear-gradient(135deg, #D8D4CC, #888888);
-  color: var(--bg);
-  font-weight: 600;
-}
-.btn-gold:hover { background: linear-gradient(135deg, #F5F0E6, #D8D4CC); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(232,228,220,0.18); }
-.btn-ghost {
-  background: transparent;
-  color: var(--muted);
-  border: 1px solid var(--border);
-}
-.btn-ghost:hover { background: var(--panel); color: var(--text); border-color: rgba(232,228,220,0.18); }
-.btn-danger { background: rgba(184,92,92,0.15); color: var(--danger); border: 1px solid rgba(184,92,92,0.3); }
-.btn-danger:hover { background: rgba(184,92,92,0.25); }
-.btn-sm { padding: 6px 12px; font-size: 12px; }
-
-/* ===== PAGE CONTENT ===== */
-.page { display: none; flex: 1; padding: 28px; animation: fadeIn 0.3s ease; }
-.page.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-/* ===== GRID CARDS ===== */
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-.stat-card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-}
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--accent-color, var(--gold));
-}
-.stat-card .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 8px; }
-.stat-card .stat-val { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--cream); }
-.stat-card .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
-.stat-card .stat-icon { position: absolute; top: 20px; right: 20px; font-size: 28px; opacity: 0.15; }
-
-/* ===== SECTION BLOCKS ===== */
-.section-block {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-.section-header {
-  padding: 18px 22px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.section-header h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 17px;
-  color: var(--cream);
-  font-weight: 600;
-}
-.section-body { padding: 22px; }
-
-/* ===== TABLES ===== */
-table { width: 100%; border-collapse: collapse; }
-th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); padding: 0 14px 12px; font-weight: 600; }
-td { padding: 13px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; vertical-align: middle; }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(201,168,76,0.03); }
-
-/* ===== BADGES ===== */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
-  border-radius: 99px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-.badge-confirmed { background: rgba(110,168,130,0.15); color: var(--success); border: 1px solid rgba(110,168,130,0.3); }
-.badge-pending { background: rgba(232,228,220,0.10); color: var(--gold); border: 1px solid rgba(232,228,220,0.18); }
-.badge-declined { background: rgba(184,92,92,0.15); color: var(--danger); border: 1px solid rgba(184,92,92,0.3); }
-.badge-paid { background: rgba(110,168,130,0.15); color: var(--success); border: 1px solid rgba(110,168,130,0.3); }
-.badge-unpaid { background: rgba(184,92,92,0.15); color: var(--danger); border: 1px solid rgba(184,92,92,0.3); }
-.badge-partial { background: rgba(168,168,179,0.12); color: var(--accent); border: 1px solid rgba(168,168,179,0.22); }
-.badge-done { background: rgba(110,168,130,0.15); color: var(--success); border: 1px solid rgba(110,168,130,0.3); }
-.badge-inprog { background: rgba(138,171,168,0.12); color: var(--teal); border: 1px solid rgba(138,171,168,0.22); }
-.badge-todo { background: rgba(122,122,133,0.15); color: var(--muted); border: 1px solid rgba(122,122,133,0.3); }
-
-/* ===== FORM STYLES ===== */
-.form-row { display: grid; gap: 14px; margin-bottom: 14px; }
-.form-row.cols-2 { grid-template-columns: 1fr 1fr; }
-.form-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
-input, select, textarea {
-  width: 100%;
-  background: var(--bg3);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: var(--radius-sm);
-  padding: 10px 14px;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  transition: border-color 0.2s;
-  outline: none;
-}
-input:focus, select:focus, textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(232,228,220,0.06); }
-textarea { resize: vertical; min-height: 80px; }
-select option { background: var(--bg3); }
-
-/* ===== MODAL ===== */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(6px);
-  z-index: 100;
-  display: none;
-  align-items: center;
-  justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 28px;
-  width: 520px;
-  max-width: 95vw;
-  max-height: 90vh;
-  overflow-y: auto;
-  animation: modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
-}
-@keyframes modalIn { from { transform: scale(0.92) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-.modal-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  color: var(--cream);
-  margin-bottom: 20px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
-}
-.modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
-
-/* ===== PROGRESS BARS ===== */
-.progress-bar-wrap { background: var(--bg3); border-radius: 99px; height: 8px; overflow: hidden; }
-.progress-bar { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
-
-/* ===== BUDGET SECTION ===== */
-.budget-overview {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 20px;
-}
-.budget-card {
-  background: var(--panel2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  text-align: center;
-}
-.budget-card .bc-amt { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--cream); }
-.budget-card .bc-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-top: 4px; }
-.budget-card .bc-sub { font-size: 12px; color: var(--gold); margin-top: 2px; }
-
-.cat-budget-item { margin-bottom: 16px; }
-.cat-budget-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.cat-budget-name { font-size: 13px; font-weight: 500; color: var(--text); }
-.cat-budget-nums { font-size: 12px; color: var(--muted); }
-
-/* ===== CHECKLIST ===== */
-.task-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 13px 16px;
-  background: var(--bg3);
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: var(--radius-sm);
-  margin-bottom: 8px;
-  transition: all 0.2s;
-}
-.task-item:hover { border-color: var(--border); }
-.task-checkbox {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--muted);
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.2s;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: transparent;
-}
-.task-checkbox.checked { background: var(--gold); border-color: var(--gold); color: var(--bg); }
-.task-name { flex: 1; font-size: 13px; }
-.task-name.done { text-decoration: line-through; color: var(--muted); }
-.task-assignee { font-size: 11px; color: var(--accent); background: rgba(168,168,179,0.08); padding: 3px 9px; border-radius: 99px; }
-.task-due { font-size: 11px; color: var(--muted); }
-
-/* ===== RSVP / INVITE ===== */
-.invite-card {
-  background: linear-gradient(135deg, #161618, #1E1E22);
-  border: 1px solid rgba(232,228,220,0.18);
-  border-radius: var(--radius);
-  padding: 28px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-.invite-card::before {
-  content: '';
-  position: absolute;
-  top: -60px; right: -60px;
-  width: 180px; height: 180px;
-  background: radial-gradient(circle, rgba(232,228,220,0.06), transparent 70%);
-  border-radius: 50%;
-}
-.invite-event-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 28px;
-  color: var(--gold);
-  margin-bottom: 6px;
-}
-.invite-event-sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
-.invite-details { display: flex; justify-content: center; gap: 24px; margin-bottom: 20px; }
-.invite-detail { text-align: center; }
-.invite-detail .id-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); }
-.invite-detail .id-val { font-size: 15px; color: var(--cream); font-weight: 500; margin-top: 2px; }
-#qr-container { display: flex; justify-content: center; margin: 16px 0; }
-#qr-container canvas, #qr-container img { border-radius: 8px; border: 3px solid var(--gray2); }
-
-/* ===== GUEST FILTERS ===== */
-.filter-row { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
-.filter-chip {
-  padding: 6px 14px;
-  border-radius: 99px;
-  font-size: 12px;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  color: var(--muted);
-  background: transparent;
-  font-family: 'DM Sans', sans-serif;
-  transition: all 0.2s;
-}
-.filter-chip.active { background: rgba(232,228,220,0.08); border-color: var(--gold); color: var(--gold); font-weight: 500; }
-
-/* ===== VENDOR ===== */
-.vendor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
-.vendor-card {
-  background: var(--panel2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
-  position: relative;
-}
-.vendor-card .vc-category { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gold); margin-bottom: 8px; }
-.vendor-card .vc-name { font-size: 16px; font-weight: 600; color: var(--cream); margin-bottom: 4px; }
-.vendor-card .vc-contact { font-size: 12px; color: var(--muted); }
-.vendor-card .vc-cost { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--text); margin-top: 12px; }
-.vendor-card .vc-actions { display: flex; gap: 8px; margin-top: 14px; }
-.vendor-status-dot {
-  position: absolute; top: 16px; right: 16px;
-  width: 8px; height: 8px; border-radius: 50%;
-}
-
-/* ===== TEMPLATE THEMES ===== */
-.themes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.theme-card.umemulo-card { grid-column: 1 / -1; } .theme-card.umemulo-card .theme-preview { height: 220px; } .theme-card.umemulo-card .theme-preview-overlay .tpo-name { font-size: 22px; }
-.theme-card {
-  border-radius: var(--radius);
-  overflow: hidden;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.34,1.2,0.64,1);
-  position: relative;
-  background: var(--panel2);
-}
-.theme-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,0.5); }
-.theme-card.selected { border-color: rgba(232,228,220,0.5); box-shadow: 0 0 0 1px rgba(232,228,220,0.15), 0 16px 40px rgba(0,0,0,0.4); }
-.theme-card.umemulo-card { border-color: rgba(196,140,60,0.4); }
-.theme-card.umemulo-card.selected { border-color: #C48C3C; box-shadow: 0 0 0 1px rgba(196,140,60,0.3), 0 16px 48px rgba(196,140,60,0.15); }
-.theme-preview {
-  height: 160px;
-  position: relative;
-  overflow: hidden;
-}
-.theme-preview img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.5s ease;
-}
-.theme-card:hover .theme-preview img { transform: scale(1.06); }
-.theme-preview-overlay {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  justify-content: flex-end;
-  padding: 14px;
-  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
-}
-.theme-preview-overlay .tpo-tag {
-  font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
-  color: rgba(255,255,255,0.7); margin-bottom: 4px; font-weight: 600;
-}
-.theme-preview-overlay .tpo-name {
-  font-family: "Playfair Display", serif;
-  font-size: 17px; color: #fff; font-weight: 600; line-height: 1.2;
-}
-.theme-color-strip { display: flex; height: 4px; }
-.theme-color-strip span { flex: 1; }
-.theme-info { padding: 13px 16px 14px; }
-.theme-info p { font-size: 12px; color: var(--muted); line-height: 1.5; }
-.theme-info .theme-palette { display: flex; gap: 5px; margin-top: 10px; align-items: center; }
-.theme-info .theme-palette span {
-  width: 14px; height: 14px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.1);
-  display: inline-block;
-}
-.theme-selected-badge {
-  position: absolute; top: 10px; right: 10px;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(6px);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 99px;
-  display: none;
-  border: 1px solid rgba(255,255,255,0.2);
-}
-.theme-card.selected .theme-selected-badge { display: block; }
-.umemulo-badge {
-  position: absolute; top: 10px; left: 10px;
-  background: rgba(196,140,60,0.85);
-  backdrop-filter: blur(6px);
-  color: #fff;
-  font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-  padding: 4px 10px; border-radius: 99px;
-}
-.umemulo-info-btn {
-  display: inline-flex; align-items: center; gap: 5px;
-  margin-top: 10px; font-size: 11px; color: #C48C3C;
-  background: rgba(196,140,60,0.1); border: 1px solid rgba(196,140,60,0.25);
-  border-radius: 99px; padding: 4px 10px; cursor: pointer; transition: 0.2s;
-  font-family: "DM Sans", sans-serif;
-}
-.umemulo-info-btn:hover { background: rgba(196,140,60,0.2); }
-
-/* ===== SEARCH ===== */
-.search-wrap { position: relative; }
-.search-wrap input { padding-left: 36px; }
-.search-wrap::before { content: '🔍'; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; pointer-events: none; }
-
-/* ===== PROGRESS RING ===== */
-.donut-wrap { position: relative; display: inline-block; }
-.donut-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.donut-pct { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--cream); }
-.donut-sub { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-
-/* ===== EMPTY STATES ===== */
-.empty-state { text-align: center; padding: 48px 24px; }
-.empty-state .es-icon { font-size: 48px; opacity: 0.4; margin-bottom: 12px; }
-.empty-state h4 { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--muted); margin-bottom: 6px; }
-.empty-state p { font-size: 13px; color: var(--muted); opacity: 0.7; }
-
-/* ===== DASHBOARD TIMELINE ===== */
-.timeline { padding: 4px 0; }
-.tl-item { display: flex; gap: 16px; padding-bottom: 20px; position: relative; }
-.tl-item::before { content: ''; position: absolute; left: 15px; top: 28px; bottom: 0; width: 1px; background: var(--border); }
-.tl-item:last-child::before { display: none; }
-.tl-dot { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--gold); background: var(--panel2); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
-.tl-content { flex: 1; }
-.tl-title { font-size: 13px; font-weight: 500; color: var(--text); }
-.tl-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.tl-date { font-size: 11px; color: var(--gold); margin-top: 3px; }
-
-/* ===== NOTIFICATION TOAST ===== */
-.toast {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px 20px;
-  font-size: 13px;
-  color: var(--text);
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: var(--shadow);
-  animation: toastIn 0.3s ease;
-  max-width: 320px;
-}
-@keyframes toastIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
-
-/* ===== TWO-COL LAYOUT ===== */
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-
-/* ===== MENU CHOICE PILLS ===== */
-.menu-choice {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 99px;
-  font-size: 11px;
-  font-weight: 600;
-  background: rgba(138,171,168,0.12);
-  color: var(--teal);
-  border: 1px solid rgba(138,171,168,0.22);
-}
-.menu-veg { background: rgba(110,168,130,0.12); color: var(--success); border-color: rgba(110,168,130,0.3); }
-.menu-meat { background: rgba(184,160,152,0.10); color: var(--rose); border-color: rgba(184,160,152,0.22); }
-.menu-vegan { background: rgba(138,171,168,0.10); color: var(--teal); border-color: rgba(138,171,168,0.22); }
-
-.checkin-btn {
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  cursor: pointer;
-  border: none;
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 600;
-  transition: 0.2s;
-}
-.checkin-btn.in { background: rgba(110,168,130,0.15); color: var(--success); border: 1px solid rgba(110,168,130,0.3); }
-.checkin-btn.out { background: rgba(232,228,220,0.08); color: var(--gold); border: 1px solid var(--border); }
-.checkin-btn.in:hover { background: rgba(110,168,130,0.3); }
-.checkin-btn.out:hover { background: rgba(232,228,220,0.12); }
-
-/* ===== DELETE ICON ===== */
-.del-btn {
-  background: none;
-  border: none;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 15px;
-  transition: color 0.2s;
-  padding: 4px;
-}
-.del-btn:hover { color: var(--danger); }
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 900px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .themes-grid { grid-template-columns: 1fr 1fr; }
-  .two-col { grid-template-columns: 1fr; }
-  .budget-overview { grid-template-columns: 1fr 1fr 1fr; }
-}
-
-/* ===== AUTH OVERLAY ===== */
+/* AUTH OVERLAY */
 #auth-overlay {
   position: fixed; inset: 0;
   background: var(--bg);
@@ -655,7 +61,7 @@ select option { background: var(--bg3); }
   border-right: 1px solid var(--border);
   display: flex; flex-direction: column;
   padding: 44px 42px;
-  position: relative; overflow: hidden;
+  position: relative; overflow: auto;
 }
 .auth-left::before {
   content: ''; position: absolute;
@@ -704,6 +110,7 @@ select option { background: var(--bg3); }
   background: var(--bg3); border: 2px solid var(--border);
   display: flex; align-items: center; justify-content: center;
   font-size: 26px; overflow: hidden; flex-shrink: 0; cursor: pointer; transition: border-color 0.2s;
+  background-size: cover; background-position: center;
 }
 .avatar-preview:hover { border-color: rgba(232,228,220,0.3); }
 .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
@@ -746,7 +153,7 @@ select option { background: var(--bg3); }
 .user-pill-avatar {
   width: 26px; height: 26px; border-radius: 50%;
   background: var(--panel2); display: flex; align-items: center; justify-content: center;
-  font-size: 13px; overflow: hidden;
+  font-size: 13px; overflow: hidden; background-size: cover;
 }
 .user-pill-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .auth-right {
@@ -754,93 +161,39 @@ select option { background: var(--bg3); }
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   padding: 48px; position: relative; overflow: hidden;
 }
-.auth-card-stack { position: relative; height: 260px; width: 340px; margin-bottom: 36px; }
-.auth-demo-card {
-  position: absolute; border-radius: 14px; padding: 22px;
-  border: 1px solid var(--border);
-}
-.auth-demo-card:nth-child(1) { background: var(--panel2); width: 260px; bottom: 0; left: 50px; transform: rotate(-5deg); }
-.auth-demo-card:nth-child(2) { background: var(--panel); width: 280px; bottom: 36px; left: 30px; transform: rotate(-1.5deg); z-index: 2; }
-.auth-demo-card:nth-child(3) { background: var(--bg2); width: 300px; bottom: 72px; left: 10px; transform: rotate(2deg); z-index: 3; border-color: rgba(232,228,220,0.16); }
-.auth-demo-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 8px; }
-.auth-demo-name { font-family: "Playfair Display", serif; font-size: 18px; color: var(--cream); }
-.auth-demo-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
-.auth-demo-avatar {
-  width: 34px; height: 34px; border-radius: 50%;
-  background: var(--panel2); border: 2px solid var(--border);
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 16px; float: right; margin-top: -2px;
-}
 .auth-tagline { text-align: center; }
 .auth-tagline h2 { font-family: "Playfair Display", serif; font-size: 26px; color: var(--cream); line-height: 1.35; margin-bottom: 12px; }
 .auth-tagline p { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 320px; margin: 0 auto; }
-.auth-designer { position: absolute; bottom: 24px; font-size: 11px; color: var(--muted); opacity: 0.5; }
 
-/* Sidebar user profile */
-.sidebar-user {
-  display: flex; align-items: center; gap: 11px;
-  padding: 16px 14px 12px; border-bottom: 1px solid var(--border);
-  cursor: pointer; transition: background 0.2s;
+/* TOAST NOTIFICATIONS */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 20px;
+  font-size: 13px;
+  color: var(--text);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow);
+  animation: toastIn 0.3s ease;
+  max-width: 320px;
 }
-.sidebar-user:hover { background: var(--panel); }
-.sidebar-user-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: var(--panel2); border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 17px; overflow: hidden; flex-shrink: 0;
-}
-.sidebar-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.sidebar-user-info { flex: 1; min-width: 0; }
-.sidebar-user-name { font-size: 13px; font-weight: 600; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sidebar-user-handle { font-size: 11px; color: var(--muted); margin-top: 1px; }
-.sidebar-logout { font-size: 15px; color: var(--muted); cursor: pointer; flex-shrink: 0; transition: color 0.2s; }
-.sidebar-logout:hover { color: var(--danger); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Welcome banner */
-.welcome-banner {
-  background: var(--panel); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 20px 24px; margin-bottom: 20px;
-  display: flex; align-items: center; gap: 18px; position: relative; overflow: hidden;
-}
-.welcome-banner::after {
-  content: ''; position: absolute; top: -40px; right: -40px;
-  width: 160px; height: 160px;
-  background: radial-gradient(circle, rgba(232,228,220,0.04), transparent 70%);
-  border-radius: 50%; pointer-events: none;
-}
-.welcome-avatar {
-  width: 52px; height: 52px; border-radius: 50%;
-  background: var(--panel2); border: 2px solid rgba(232,228,220,0.18);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 24px; overflow: hidden; flex-shrink: 0;
-}
-.welcome-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.welcome-text h3 { font-family: "Playfair Display", serif; font-size: 19px; color: var(--cream); }
-.welcome-text p { font-size: 12px; color: var(--muted); margin-top: 3px; }
-.welcome-meta { margin-left: auto; text-align: right; }
-.welcome-meta .wm-city { font-size: 12px; color: var(--muted); }
-.welcome-meta .wm-member { font-size: 11px; color: var(--muted); opacity: 0.55; margin-top: 2px; }
-
-/* Profile view modal */
-.profile-avatar-lg {
-  width: 80px; height: 80px; border-radius: 50%;
-  background: var(--bg3); border: 2px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 36px; overflow: hidden; margin: 0 auto 18px;
-}
-.profile-avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
-.profile-detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-.profile-detail-row:last-child { border-bottom: none; }
-.profile-detail-row span:first-child { color: var(--muted); }
-.profile-detail-row span:last-child { color: var(--cream); font-weight: 500; }
-
+#qr-container { display: flex; justify-content: center; margin: 16px 0; }
+#qr-container canvas { border-radius: 8px; border: 3px solid var(--panel); }
 </style>
 </head>
 <body>
 
-<!-- ===== AUTH OVERLAY ===== -->
+<!-- AUTH OVERLAY -->
 <div id="auth-overlay">
-  <!-- Left: forms -->
   <div class="auth-left">
     <div class="auth-brand">
       <h1>SS Event Studio</h1>
@@ -986,1975 +339,349 @@ select option { background: var(--bg3); }
     </div>
   </div>
 
-  <!-- Right: decorative -->
   <div class="auth-right">
-    <div class="auth-card-stack">
-      <div class="auth-demo-card">
-        <div class="auth-demo-label">Guest Planner</div>
-        <div class="auth-demo-name">Wedding Day</div>
-        <div class="auth-demo-sub">148 guests · $14,200 budget</div>
-      </div>
-      <div class="auth-demo-card">
-        <div class="auth-demo-avatar">🌿</div>
-        <div class="auth-demo-label">Your Profile</div>
-        <div class="auth-demo-name">Sophie Chen</div>
-        <div class="auth-demo-sub">Nairobi · Since Jan 2025</div>
-      </div>
-      <div class="auth-demo-card">
-        <div class="auth-demo-avatar">✨</div>
-        <div class="auth-demo-label">Active Event</div>
-        <div class="auth-demo-name">Garden Anniversary</div>
-        <div class="auth-demo-sub">Sept 20, 2025 · The Pavilion</div>
-      </div>
-    </div>
     <div class="auth-tagline">
-      <h2>Your events,<br>beautifully organised.</h2>
-      <p>Plan every detail, coordinate every vendor, and celebrate every guest — all from one personalised studio.</p>
-    </div>
-    <div class="auth-designer">Designed by Super Shealty</div>
-  </div>
-</div>
-
-<!-- Profile View Modal -->
-<div class="modal-overlay" id="modal-profile">
-  <div class="modal" style="max-width:420px">
-    <div class="modal-title">My Profile</div>
-    <div class="profile-avatar-lg" id="profile-avatar-lg">👤</div>
-    <div id="profile-details"></div>
-    <div class="modal-footer">
-      <button class="btn btn-danger btn-sm" onclick="doLogout()">Sign Out</button>
-      <button class="btn btn-ghost" onclick="closeModal('modal-profile')">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- SIDEBAR -->
-<nav class="sidebar">
-  <div class="sidebar-logo">
-    <h1>SS Event Studio</h1>
-    <span>Event Studio</span>
-  </div>
-  <div class="sidebar-user" onclick="openModal('modal-profile')" id="sidebar-user-widget" style="display:none">
-    <div class="sidebar-user-avatar" id="sidebar-avatar">👤</div>
-    <div class="sidebar-user-info">
-      <div class="sidebar-user-name" id="sidebar-preferred-name">—</div>
-      <div class="sidebar-user-handle" id="sidebar-username-handle">@username</div>
-    </div>
-    <span class="sidebar-logout" onclick="event.stopPropagation();doLogout()" title="Sign out">⏻</span>
-  </div>
-
-  <div class="sidebar-section">Main</div>
-  <div class="nav-item active" onclick="navigate('dashboard', this)">
-    <span class="icon">✦</span> Dashboard
-  </div>
-  <div class="nav-item" onclick="navigate('events', this)">
-    <span class="icon">🎪</span> Events & Themes
-  </div>
-
-  <div class="sidebar-section">Planning</div>
-  <div class="nav-item" onclick="navigate('guests', this)">
-    <span class="icon">👥</span> Guest List
-    <span class="nav-badge" id="guest-count-badge">0</span>
-  </div>
-  <div class="nav-item" onclick="navigate('rsvp', this)">
-    <span class="icon">📨</span> Smart RSVP
-  </div>
-  <div class="nav-item" onclick="navigate('vendors', this)">
-    <span class="icon">🤝</span> Vendors
-  </div>
-  <div class="nav-item" onclick="navigate('budget', this)">
-    <span class="icon">💰</span> Budget Suite
-  </div>
-  <div class="nav-item" onclick="navigate('tasks', this)">
-    <span class="icon">✅</span> Checklist
-    <span class="nav-badge" id="task-count-badge" style="background:var(--accent)">0</span>
-  </div>
-
-  <div class="sidebar-footer">
-    <div class="event-selector" onclick="navigate('events', document.querySelectorAll('.nav-item')[1])">
-
-      <div class="es-label">Active Event</div>
-      <div class="es-name" id="sidebar-event-name">No event selected</div>
-      <div class="es-date" id="sidebar-event-date">Click to select</div>
-    </div>
-    <div style="margin-top:14px; text-align:center; font-size:11px; color:var(--muted); letter-spacing:0.5px; opacity:0.7;">
-      Designed by <span style="color:var(--gold); font-weight:600; opacity:1;">Super Shealty</span>
-    </div>
-  </div>
-</nav>
-
-<!-- MAIN -->
-<div class="main">
-  <div class="topbar">
-    <h2 id="page-title">Dashboard</h2>
-    <div class="topbar-actions" id="topbar-actions">
-      <span id="topbar-greeting" style="font-size:12px;color:var(--muted)">SS Event Studio ✦</span>
-    </div>
-  </div>
-
-  <!-- ===== DASHBOARD PAGE ===== -->
-  <div class="page active" id="page-dashboard">
-    <div id="welcome-banner" class="welcome-banner"></div>
-    <div class="stats-grid">
-      <div class="stat-card" style="--accent-color: var(--gold)">
-        <div class="stat-icon">👥</div>
-        <div class="stat-label">Total Guests</div>
-        <div class="stat-val" id="dash-guests">0</div>
-        <div class="stat-sub" id="dash-confirmed">0 confirmed</div>
-      </div>
-      <div class="stat-card" style="--accent-color: var(--success)">
-        <div class="stat-icon">💰</div>
-        <div class="stat-label">Budget Used</div>
-        <div class="stat-val" id="dash-budget">$0</div>
-        <div class="stat-sub" id="dash-budget-sub">of $0 total</div>
-      </div>
-      <div class="stat-card" style="--accent-color: var(--accent)">
-        <div class="stat-icon">✅</div>
-        <div class="stat-label">Tasks Done</div>
-        <div class="stat-val" id="dash-tasks">0/0</div>
-        <div class="stat-sub" id="dash-tasks-sub">0% complete</div>
-      </div>
-      <div class="stat-card" style="--accent-color: var(--rose)">
-        <div class="stat-icon">🤝</div>
-        <div class="stat-label">Vendors</div>
-        <div class="stat-val" id="dash-vendors">0</div>
-        <div class="stat-sub" id="dash-vendors-sub">0 confirmed</div>
-      </div>
-    </div>
-
-    <div class="two-col">
-      <div class="section-block">
-        <div class="section-header">
-          <h3>Upcoming Milestones</h3>
-        </div>
-        <div class="section-body">
-          <div class="timeline" id="dashboard-timeline">
-            <div class="empty-state">
-              <div class="es-icon">📅</div>
-              <h4>No tasks yet</h4>
-              <p>Add tasks to see your timeline</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="section-block">
-          <div class="section-header"><h3>RSVP Overview</h3></div>
-          <div class="section-body">
-            <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap">
-              <div style="text-align:center">
-                <svg width="110" height="110" viewBox="0 0 110 110" id="rsvp-donut">
-                  <circle cx="55" cy="55" r="42" fill="none" stroke="var(--bg3)" stroke-width="12"/>
-                  <circle cx="55" cy="55" r="42" fill="none" stroke="var(--success)" stroke-width="12"
-                    stroke-dasharray="264" stroke-dashoffset="264" id="donut-confirmed"
-                    stroke-linecap="round" transform="rotate(-90 55 55)"/>
-                  <circle cx="55" cy="55" r="42" fill="none" stroke="var(--danger)" stroke-width="12"
-                    stroke-dasharray="264" stroke-dashoffset="264" id="donut-declined"
-                    stroke-linecap="round" transform="rotate(-90 55 55)"/>
-                </svg>
-                <div style="margin-top:4px; font-size:12px; color:var(--muted)">Response Rate</div>
-              </div>
-              <div style="flex:1; min-width:120px">
-                <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px">
-                  <span style="width:10px;height:10px;border-radius:50%;background:var(--success);flex-shrink:0"></span>
-                  <span style="font-size:13px;flex:1">Confirmed</span>
-                  <strong id="rsvp-confirmed-n" style="color:var(--success)">0</strong>
-                </div>
-                <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px">
-                  <span style="width:10px;height:10px;border-radius:50%;background:var(--gold);flex-shrink:0"></span>
-                  <span style="font-size:13px;flex:1">Pending</span>
-                  <strong id="rsvp-pending-n" style="color:var(--gold)">0</strong>
-                </div>
-                <div style="display:flex; align-items:center; gap:8px">
-                  <span style="width:10px;height:10px;border-radius:50%;background:var(--danger);flex-shrink:0"></span>
-                  <span style="font-size:13px;flex:1">Declined</span>
-                  <strong id="rsvp-declined-n" style="color:var(--danger)">0</strong>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="section-block" style="margin-top:0">
-          <div class="section-header"><h3>Budget Snapshot</h3></div>
-          <div class="section-body" id="budget-snapshot">
-            <p style="color:var(--muted); font-size:13px">No budget set yet.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== EVENTS & THEMES PAGE ===== -->
-  <div class="page" id="page-events">
-    <div class="section-block" style="margin-bottom:20px">
-      <div class="section-header">
-        <h3>Event Details</h3>
-        <button class="btn btn-gold btn-sm" onclick="saveEventDetails()">Save Event</button>
-      </div>
-      <div class="section-body">
-        <div class="form-row cols-2">
-          <div>
-            <label>Event Name</label>
-            <input type="text" id="event-name" placeholder="e.g. Emma & James Wedding">
-          </div>
-          <div>
-            <label>Event Type</label>
-            <select id="event-type">
-              <option>Wedding</option>
-              <option>Birthday</option>
-              <option>Corporate</option>
-              <option>Baby Shower</option>
-              <option>Anniversary</option>
-              <option>Graduation</option>
-              <option>Other</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row cols-3">
-          <div>
-            <label>Date</label>
-            <input type="date" id="event-date">
-          </div>
-          <div>
-            <label>Time</label>
-            <input type="time" id="event-time" value="18:00">
-          </div>
-          <div>
-            <label>Venue</label>
-            <input type="text" id="event-venue" placeholder="Venue name or address">
-          </div>
-        </div>
-        <div class="form-row">
-          <div>
-            <label>Total Budget ($)</label>
-            <input type="number" id="event-budget" placeholder="e.g. 15000">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section-block">
-      <div class="section-header"><h3>Choose a Theme Template</h3></div>
-      <div class="section-body">
-        <div class="themes-grid" id="themes-grid">
-          <!-- injected by JS -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== GUEST LIST PAGE ===== -->
-  <div class="page" id="page-guests">
-    <div class="filter-row">
-      <div class="search-wrap" style="flex:1; max-width:280px">
-        <input type="text" placeholder="Search guests…" id="guest-search" oninput="renderGuests()">
-      </div>
-      <button class="filter-chip active" onclick="setGuestFilter('all', this)">All</button>
-      <button class="filter-chip" onclick="setGuestFilter('confirmed', this)">Confirmed</button>
-      <button class="filter-chip" onclick="setGuestFilter('pending', this)">Pending</button>
-      <button class="filter-chip" onclick="setGuestFilter('declined', this)">Declined</button>
-      <button class="btn btn-gold btn-sm" style="margin-left:auto" onclick="openModal('modal-add-guest')">+ Add Guest</button>
-    </div>
-
-    <div class="section-block">
-      <div class="section-header">
-        <h3>Guest List <span id="guest-list-count" style="font-size:14px;color:var(--muted);font-family:'DM Sans'"></span></h3>
-      </div>
-      <div class="section-body" style="padding:0">
-        <table>
-          <thead><tr>
-            <th>Name</th><th>Email</th><th>Table</th><th>Menu</th><th>RSVP</th><th>Check-in</th><th></th>
-          </tr></thead>
-          <tbody id="guests-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== SMART RSVP PAGE ===== -->
-  <div class="page" id="page-rsvp">
-    <div class="two-col">
-      <div>
-        <div class="section-block">
-          <div class="section-header"><h3>Digital Invitation</h3></div>
-          <div class="section-body">
-            <div class="invite-card" id="invite-preview">
-              <div class="invite-event-name" id="inv-name">Your Event Name</div>
-              <div class="invite-event-sub" id="inv-sub">You are cordially invited</div>
-              <div class="invite-details">
-                <div class="invite-detail">
-                  <div class="id-label">Date</div>
-                  <div class="id-val" id="inv-date">TBD</div>
-                </div>
-                <div class="invite-detail">
-                  <div class="id-label">Time</div>
-                  <div class="id-val" id="inv-time">TBD</div>
-                </div>
-                <div class="invite-detail">
-                  <div class="id-label">Venue</div>
-                  <div class="id-val" id="inv-venue">TBD</div>
-                </div>
-              </div>
-              <div id="qr-container"></div>
-              <div style="font-size:11px;color:var(--muted);margin-top:8px">Scan to RSVP & check-in</div>
-            </div>
-            <div style="display:flex; gap:10px; margin-top:14px">
-              <button class="btn btn-gold" style="flex:1" onclick="generateInvite()">🔄 Refresh QR Code</button>
-              <button class="btn btn-ghost" onclick="copyInviteLink()">📋 Copy Link</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-block">
-          <div class="section-header"><h3>Menu Options</h3></div>
-          <div class="section-body">
-            <div id="menu-options-list" style="margin-bottom:14px"></div>
-            <div style="display:flex; gap:10px">
-              <input type="text" id="new-menu-option" placeholder="e.g. Grilled Salmon, Veggie Risotto…" style="flex:1">
-              <button class="btn btn-gold btn-sm" onclick="addMenuOption()">Add</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="section-block">
-          <div class="section-header"><h3>RSVP Tracking</h3></div>
-          <div class="section-body" style="padding:0">
-            <table>
-              <thead><tr><th>Guest</th><th>Status</th><th>Menu</th><th>Checked In</th></tr></thead>
-              <tbody id="rsvp-tbody"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="section-block">
-          <div class="section-header"><h3>Menu Breakdown</h3></div>
-          <div class="section-body" id="menu-breakdown">
-            <p style="color:var(--muted); font-size:13px">Add guests & menu choices to see breakdown.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== VENDORS PAGE ===== -->
-  <div class="page" id="page-vendors">
-    <div style="display:flex; justify-content:flex-end; margin-bottom:18px">
-      <button class="btn btn-gold" onclick="openModal('modal-add-vendor')">+ Add Vendor</button>
-    </div>
-    <div class="vendor-grid" id="vendors-grid">
-      <div class="empty-state" style="grid-column:1/-1">
-        <div class="es-icon">🤝</div>
-        <h4>No vendors yet</h4>
-        <p>Add caterers, photographers, florists and more</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== BUDGET SUITE PAGE ===== -->
-  <div class="page" id="page-budget">
-    <div class="budget-overview">
-      <div class="budget-card">
-        <div class="bc-amt" id="b-total">$0</div>
-        <div class="bc-label">Total Budget</div>
-        <div class="bc-sub" id="b-total-sub">Set in Events</div>
-      </div>
-      <div class="budget-card">
-        <div class="bc-amt" id="b-spent" style="color:var(--danger)">$0</div>
-        <div class="bc-label">Total Spent</div>
-        <div class="bc-sub" id="b-spent-pct">0% used</div>
-      </div>
-      <div class="budget-card">
-        <div class="bc-amt" id="b-remaining" style="color:var(--success)">$0</div>
-        <div class="bc-label">Remaining</div>
-        <div class="bc-sub" id="b-remaining-sub">0 unpaid expenses</div>
-      </div>
-    </div>
-
-    <div class="two-col">
-      <div>
-        <div class="section-block">
-          <div class="section-header">
-            <h3>Category Budgets</h3>
-            <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-category')">+ Category</button>
-          </div>
-          <div class="section-body" id="category-budgets">
-            <p style="color:var(--muted); font-size:13px">No categories set.</p>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="section-block">
-          <div class="section-header">
-            <h3>Expenses</h3>
-            <button class="btn btn-gold btn-sm" onclick="openModal('modal-add-expense')">+ Expense</button>
-          </div>
-          <div class="section-body" style="padding:0">
-            <table>
-              <thead><tr><th>Item</th><th>Category</th><th>Amount</th><th>Status</th><th></th></tr></thead>
-              <tbody id="expenses-tbody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== TASKS / CHECKLIST PAGE ===== -->
-  <div class="page" id="page-tasks">
-    <div style="display:flex; gap:10px; margin-bottom:18px; align-items:center">
-      <div class="filter-row" style="margin:0; flex:1">
-        <button class="filter-chip active" onclick="setTaskFilter('all', this)">All</button>
-        <button class="filter-chip" onclick="setTaskFilter('todo', this)">To Do</button>
-        <button class="filter-chip" onclick="setTaskFilter('inprog', this)">In Progress</button>
-        <button class="filter-chip" onclick="setTaskFilter('done', this)">Done</button>
-      </div>
-      <button class="btn btn-gold btn-sm" onclick="openModal('modal-add-task')">+ Add Task</button>
-    </div>
-
-    <div class="two-col">
-      <div>
-        <div class="section-block">
-          <div class="section-header"><h3>📋 To Do</h3></div>
-          <div class="section-body" id="tasks-todo" style="min-height:80px"></div>
-        </div>
-        <div class="section-block">
-          <div class="section-header"><h3>⏳ In Progress</h3></div>
-          <div class="section-body" id="tasks-inprog" style="min-height:80px"></div>
-        </div>
-      </div>
-      <div>
-        <div class="section-block">
-          <div class="section-header"><h3>✅ Done</h3></div>
-          <div class="section-body" id="tasks-done" style="min-height:80px"></div>
-        </div>
-        <div class="section-block">
-          <div class="section-header"><h3>Overall Progress</h3></div>
-          <div class="section-body">
-            <div style="margin-bottom:12px">
-              <div style="display:flex; justify-content:space-between; margin-bottom:6px">
-                <span style="font-size:13px; color:var(--muted)">Completion</span>
-                <span id="task-pct" style="font-size:13px; color:var(--gold); font-weight:600">0%</span>
-              </div>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar" id="task-progress-bar" style="width:0%; background:linear-gradient(90deg, #D8D4CC, #F5F0E6)"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== MODALS ===== -->
-
-<!-- Add Guest Modal -->
-<div class="modal-overlay" id="modal-add-guest">
-  <div class="modal">
-    <div class="modal-title">Add Guest</div>
-    <div class="form-row cols-2">
-      <div><label>First Name</label><input id="g-fname" placeholder="Emma"></div>
-      <div><label>Last Name</label><input id="g-lname" placeholder="Johnson"></div>
-    </div>
-    <div class="form-row">
-      <div><label>Email</label><input id="g-email" type="email" placeholder="emma@example.com"></div>
-    </div>
-    <div class="form-row cols-2">
-      <div><label>Phone</label><input id="g-phone" placeholder="+1 555 000 0000"></div>
-      <div><label>Table / Seat</label><input id="g-table" placeholder="Table 4, Seat 2"></div>
-    </div>
-    <div class="form-row cols-2">
-      <div>
-        <label>RSVP Status</label>
-        <select id="g-rsvp">
-          <option value="pending">Pending</option>
-          <option value="confirmed">Confirmed</option>
-          <option value="declined">Declined</option>
-        </select>
-      </div>
-      <div>
-        <label>Menu Choice</label>
-        <select id="g-menu">
-          <option value="">— Select —</option>
-        </select>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-add-guest')">Cancel</button>
-      <button class="btn btn-gold" onclick="addGuest()">Add Guest</button>
-    </div>
-  </div>
-</div>
-
-<!-- Add Vendor Modal -->
-<div class="modal-overlay" id="modal-add-vendor">
-  <div class="modal">
-    <div class="modal-title">Add Vendor</div>
-    <div class="form-row cols-2">
-      <div><label>Business Name</label><input id="v-name" placeholder="Blossom Florals"></div>
-      <div>
-        <label>Category</label>
-        <select id="v-cat">
-          <option>Catering</option><option>Photography</option><option>Florals</option>
-          <option>Music/DJ</option><option>Venue</option><option>Cake</option>
-          <option>Transport</option><option>Décor</option><option>Other</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row cols-2">
-      <div><label>Contact Name</label><input id="v-contact" placeholder="Sarah Bloom"></div>
-      <div><label>Phone / Email</label><input id="v-phone" placeholder="sarah@blossom.com"></div>
-    </div>
-    <div class="form-row cols-2">
-      <div><label>Cost ($)</label><input id="v-cost" type="number" placeholder="2500"></div>
-      <div>
-        <label>Payment Status</label>
-        <select id="v-pay">
-          <option value="unpaid">Unpaid</option>
-          <option value="partial">Partial</option>
-          <option value="paid">Paid</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div><label>Notes</label><textarea id="v-notes" placeholder="Contract signed, deposit paid…"></textarea></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-add-vendor')">Cancel</button>
-      <button class="btn btn-gold" onclick="addVendor()">Add Vendor</button>
-    </div>
-  </div>
-</div>
-
-<!-- Add Task Modal -->
-<div class="modal-overlay" id="modal-add-task">
-  <div class="modal">
-    <div class="modal-title">Add Task</div>
-    <div class="form-row">
-      <div><label>Task Name</label><input id="t-name" placeholder="Book the venue"></div>
-    </div>
-    <div class="form-row cols-2">
-      <div><label>Assignee</label><input id="t-assignee" placeholder="e.g. Sarah, Planner"></div>
-      <div><label>Due Date</label><input id="t-due" type="date"></div>
-    </div>
-    <div class="form-row">
-      <div>
-        <label>Status</label>
-        <select id="t-status">
-          <option value="todo">To Do</option>
-          <option value="inprog">In Progress</option>
-          <option value="done">Done</option>
-        </select>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-add-task')">Cancel</button>
-      <button class="btn btn-gold" onclick="addTask()">Add Task</button>
-    </div>
-  </div>
-</div>
-
-<!-- Add Expense Modal -->
-<div class="modal-overlay" id="modal-add-expense">
-  <div class="modal">
-    <div class="modal-title">Add Expense</div>
-    <div class="form-row">
-      <div><label>Description</label><input id="e-desc" placeholder="Floral arrangements"></div>
-    </div>
-    <div class="form-row cols-2">
-      <div><label>Category</label><select id="e-cat"></select></div>
-      <div><label>Amount ($)</label><input id="e-amount" type="number" placeholder="500"></div>
-    </div>
-    <div class="form-row">
-      <div>
-        <label>Payment Status</label>
-        <select id="e-status">
-          <option value="unpaid">Unpaid</option>
-          <option value="partial">Partial</option>
-          <option value="paid">Paid</option>
-        </select>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-add-expense')">Cancel</button>
-      <button class="btn btn-gold" onclick="addExpense()">Add Expense</button>
-    </div>
-  </div>
-</div>
-
-<!-- Add Category Modal -->
-<div class="modal-overlay" id="modal-add-category">
-  <div class="modal">
-    <div class="modal-title">Add Budget Category</div>
-    <div class="form-row">
-      <div><label>Category Name</label><input id="c-name" placeholder="Catering, Flowers, Music…"></div>
-    </div>
-    <div class="form-row">
-      <div><label>Budget Limit ($)</label><input id="c-limit" type="number" placeholder="3000"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-add-category')">Cancel</button>
-      <button class="btn btn-gold" onclick="addCategory()">Add Category</button>
+      <h2>Plan Your Perfect Event</h2>
+      <p>Create beautiful events with SS Event Studio. Manage guests, track RSVPs, and keep everything organized in one place.</p>
     </div>
   </div>
 </div>
 
 <script>
-// ===================== STATE =====================
-// State is initialised per-user in loadUserSession()
-let state = {
-  event: { name:'', type:'Wedding', date:'', time:'18:00', venue:'', budget:0, theme:'elegant' },
-  guests: [], vendors: [], tasks: [], expenses: [], categories: [],
-  menuOptions: ['Chicken', 'Vegetarian', 'Vegan', 'Fish'],
-};
-// save() is defined later in the auth section, scoped per user
-
-// ===================== NAVIGATION =====================
-function navigate(page, el) {
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  if (el) el.classList.add('active');
-  document.getElementById('page-' + page).classList.add('active');
-  const titles = { dashboard:'Dashboard', events:'Events & Themes', guests:'Guest List',
-    rsvp:'Smart RSVP', vendors:'Vendor Coordination', budget:'Budget Suite', tasks:'Task Checklist' };
-  document.getElementById('page-title').textContent = titles[page] || page;
-  if (page === 'rsvp') generateInvite();
-  if (page === 'budget') renderBudget();
-  if (page === 'tasks') renderTasks();
-  if (page === 'guests') renderGuests();
-  if (page === 'vendors') renderVendors();
-  if (page === 'dashboard') renderDashboard();
-  if (page === 'events') renderThemes();
-}
-
-// ===================== MODAL =====================
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(o => {
-  o.addEventListener('click', e => { if(e.target === o) o.classList.remove('open'); });
-});
-
-// ===================== TOAST =====================
-function toast(msg, icon='✦') {
-  const t = document.createElement('div');
-  t.className = 'toast';
-  t.innerHTML = `<span>${icon}</span> ${msg}`;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 3000);
-}
-
-// ===================== EVENTS & THEMES =====================
-const themes = [
-  {
-    id: 'umemulo',
-    name: 'Umemulo Special',
-    tag: 'Zulu Heritage',
-    desc: 'A sacred celebration of womanhood — ochre, ivory & earth tones drawn from the heart of Zulu tradition.',
-    palette: ['#C48C3C','#E8D5A3','#8B3A1A','#2C1A0E','#F5EDD8'],
-    strip: ['#C48C3C','#8B3A1A','#E8D5A3','#2C1A0E'],
-    img: 'https://images.unsplash.com/photo-1580746738099-b2d00b39cee5?w=700&h=360&fit=crop&auto=format',
-    fallback: 'linear-gradient(135deg,#2C1A0E,#8B3A1A,#C48C3C)',
-    special: true,
-  },
-  {
-    id: 'kente',
-    name: 'Kente Royale',
-    tag: 'West African',
-    desc: 'Vibrant gold, crimson & forest green inspired by the woven silk of Ghanaian Kente cloth worn by royalty.',
-    palette: ['#D4A017','#8B1A1A','#2D5A1B','#1A0D00','#F5E6C8'],
-    strip: ['#D4A017','#8B1A1A','#2D5A1B','#4A3000'],
-    img: 'https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=700&h=360&fit=crop&auto=format',
-    fallback: 'linear-gradient(135deg,#1A0D00,#8B1A1A,#D4A017)',
-    special: false,
-  },
-  {
-    id: 'sahara',
-    name: 'Sahara Sunset',
-    tag: 'North African',
-    desc: 'Copper dunes, amber skies & bone-white linen — the warmth of the Sahara at golden hour.',
-    palette: ['#C87941','#E8C48A','#6B3D1E','#1A0F06','#F5E8D0'],
-    strip: ['#C87941','#E8C48A','#6B3D1E','#1A0F06'],
-    img: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=700&h=360&fit=crop&auto=format',
-    fallback: 'linear-gradient(135deg,#1A0F06,#6B3D1E,#C87941)',
-    special: false,
-  },
-  {
-    id: 'ndebele',
-    name: 'Ndebele Geometric',
-    tag: 'South African',
-    desc: 'Bold geometric patterns in crimson, cobalt & gold — inspired by the breathtaking murals of Ndebele women artists.',
-    palette: ['#C41E3A','#1B3A6B','#E8C000','#1A1A1A','#F5F0E6'],
-    strip: ['#C41E3A','#1B3A6B','#E8C000','#2D8B4A'],
-    img: 'https://images.unsplash.com/photo-1567301347116-4ffdfc154dce?w=700&h=360&fit=crop&auto=format',
-    fallback: 'linear-gradient(135deg,#1A1A1A,#C41E3A,#E8C000)',
-    special: false,
-  },
-  {
-    id: 'swahili',
-    name: 'Swahili Coast',
-    tag: 'East African',
-    desc: 'Monsoon blue, coral & white — evoking the ancient spice routes and dhow-sailed waters of the Swahili coast.',
-    palette: ['#1B6B8A','#E87040','#F5F0E6','#0D2D3A','#C8E8F0'],
-    strip: ['#1B6B8A','#E87040','#F5F0E6','#0D2D3A'],
-    img: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=700&h=360&fit=crop&auto=format',
-    fallback: 'linear-gradient(135deg,#0D2D3A,#1B6B8A,#E87040)',
-    special: false,
-  },
-  {
-    id: 'ubuntu',
-    name: 'Ubuntu Harvest',
-    tag: 'Pan-African',
-    desc: '"Umuntu ngumuntu ngabantu" — I am because we are. A warm celebration of community, kinship & belonging.',
-    palette: ['#8B4513','#D4872A','#2D5A1B','#1A0D00','#F5E0C0'],
-    strip: ['#8B4513','#D4872A','#2D5A1B','#5A2D0A'],
-    img: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=700&h=360&fit=crop&auto=format',
-    fallback: 'linear-gradient(135deg,#1A0D00,#8B4513,#D4872A)',
-    special: false,
-  },
-];
-
-function renderThemes() {
-  const grid = document.getElementById('themes-grid');
-  grid.innerHTML = themes.map(t => {
-    const paletteDots = t.palette.map(c => `<span style="background:${c}"></span>`).join('');
-    const colorStrip = t.strip.map(c => `<span style="background:${c}"></span>`).join('');
-    const isSelected = state.event.theme === t.id;
-    return `
-      <div class="theme-card ${isSelected ? 'selected':''} ${t.special ? 'umemulo-card':''}" onclick="selectTheme('${t.id}', this)">
-        <div class="theme-preview">
-          <img src="${t.img}" alt="${t.name}"
-            onerror="this.style.display='none';this.parentNode.style.background='${t.fallback}'"
-            loading="lazy">
-          <div class="theme-preview-overlay">
-            <div class="tpo-tag">${t.tag}</div>
-            <div class="tpo-name">${t.name}</div>
-          </div>
-          ${t.special ? '<div class="umemulo-badge">✦ Featured</div>' : ''}
-          <div class="theme-selected-badge">✓ Selected</div>
-        </div>
-        <div class="theme-color-strip">${colorStrip}</div>
-        <div class="theme-info">
-          <p>${t.desc}</p>
-          <div class="theme-palette">${paletteDots}
-            ${t.special ? `<button class="umemulo-info-btn" onclick="event.stopPropagation();openModal('modal-umemulo')">Read the story ↗</button>` : ''}
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  // Populate form
-  if (state.event.name) document.getElementById('event-name').value = state.event.name;
-  if (state.event.date) document.getElementById('event-date').value = state.event.date;
-  if (state.event.time) document.getElementById('event-time').value = state.event.time;
-  if (state.event.venue) document.getElementById('event-venue').value = state.event.venue;
-  if (state.event.budget) document.getElementById('event-budget').value = state.event.budget;
-  document.getElementById('event-type').value = state.event.type;
-}
-
-function selectTheme(id, el) {
-  document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  state.event.theme = id;
-  save();
-  if (id === 'umemulo') toast('Umemulo Special selected. Bayede! 🙌', '✦');
-}
-
-function saveEventDetails() {
-  state.event.name = document.getElementById('event-name').value;
-  state.event.type = document.getElementById('event-type').value;
-  state.event.date = document.getElementById('event-date').value;
-  state.event.time = document.getElementById('event-time').value;
-  state.event.venue = document.getElementById('event-venue').value;
-  state.event.budget = parseFloat(document.getElementById('event-budget').value) || 0;
-  save();
-  updateSidebarEvent();
-  toast('Event saved!', '🎉');
-}
-
-function updateSidebarEvent() {
-  document.getElementById('sidebar-event-name').textContent = state.event.name || 'No event';
-  document.getElementById('sidebar-event-date').textContent = state.event.date ? 
-    new Date(state.event.date + 'T12:00').toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : 'Date TBD';
-}
-
-// ===================== GUESTS =====================
-let guestFilter = 'all';
-function setGuestFilter(f, el) {
-  guestFilter = f;
-  document.querySelectorAll('#page-guests .filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  renderGuests();
-}
-
-function addGuest() {
-  const fname = document.getElementById('g-fname').value.trim();
-  const lname = document.getElementById('g-lname').value.trim();
-  if (!fname) { toast('Name required', '⚠️'); return; }
-  state.guests.push({
-    id: Date.now(),
-    name: fname + ' ' + lname,
-    email: document.getElementById('g-email').value,
-    phone: document.getElementById('g-phone').value,
-    table: document.getElementById('g-table').value,
-    rsvp: document.getElementById('g-rsvp').value,
-    menu: document.getElementById('g-menu').value,
-    checkedIn: false
-  });
-  save(); closeModal('modal-add-guest');
-  ['g-fname','g-lname','g-email','g-phone','g-table'].forEach(id => document.getElementById(id).value = '');
-  renderGuests(); updateBadges(); renderDashboard();
-  toast('Guest added!', '👤');
-}
-
-function deleteGuest(id) {
-  state.guests = state.guests.filter(g => g.id !== id);
-  save(); renderGuests(); updateBadges(); renderDashboard();
-}
-
-function toggleCheckin(id) {
-  const g = state.guests.find(g => g.id === id);
-  if (g) { g.checkedIn = !g.checkedIn; save(); renderGuests(); renderRSVP(); }
-}
-
-function renderGuests() {
-  const search = document.getElementById('guest-search')?.value?.toLowerCase() || '';
-  let list = state.guests.filter(g => {
-    if (guestFilter !== 'all' && g.rsvp !== guestFilter) return false;
-    if (search && !g.name.toLowerCase().includes(search) && !g.email.toLowerCase().includes(search)) return false;
-    return true;
-  });
-  document.getElementById('guest-list-count').textContent = `(${list.length} shown of ${state.guests.length})`;
-  const tbody = document.getElementById('guests-tbody');
-  if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:32px">No guests found</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = list.map(g => `
-    <tr>
-      <td><strong style="color:var(--cream)">${g.name}</strong></td>
-      <td style="color:var(--muted)">${g.email || '—'}</td>
-      <td style="color:var(--muted)">${g.table || '—'}</td>
-      <td>${g.menu ? `<span class="menu-choice menu-${menuClass(g.menu)}">${g.menu}</span>` : '—'}</td>
-      <td><span class="badge badge-${g.rsvp}">${cap(g.rsvp)}</span></td>
-      <td>
-        <button class="checkin-btn ${g.checkedIn ? 'in':'out'}" onclick="toggleCheckin(${g.id})">
-          ${g.checkedIn ? '✓ Checked In' : 'Check In'}
-        </button>
-      </td>
-      <td><button class="del-btn" onclick="deleteGuest(${g.id})" title="Remove">✕</button></td>
-    </tr>
-  `).join('');
-
-  // Update RSVP page if visible
-  renderRSVP();
-}
-
-function menuClass(m) {
-  const ml = m.toLowerCase();
-  if (ml.includes('vegan')) return 'vegan';
-  if (ml.includes('veg')) return 'veg';
-  if (ml.includes('meat') || ml.includes('chicken') || ml.includes('beef') || ml.includes('fish') || ml.includes('salmon')) return 'meat';
-  return '';
-}
-
-// ===================== RSVP =====================
-function generateInvite() {
-  const ev = state.event;
-  document.getElementById('inv-name').textContent = ev.name || 'Your Event';
-  document.getElementById('inv-sub').textContent = ev.type ? ev.type + ' Celebration' : 'You are cordially invited';
-  document.getElementById('inv-date').textContent = ev.date ? new Date(ev.date+'T12:00').toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric'}) : 'TBD';
-  document.getElementById('inv-time').textContent = ev.time ? formatTime(ev.time) : 'TBD';
-  document.getElementById('inv-venue').textContent = ev.venue || 'TBD';
-
-  // Build a self-contained RSVP link using the current page URL + hash params
-  const base = window.location.href.split('#')[0];
-  const rsvpData = {
-    n: ev.name || 'Event',
-    t: ev.type || '',
-    d: ev.date || '',
-    tm: ev.time || '',
-    v: ev.venue || '',
-    m: state.menuOptions,
-    u: window._currentUsername || '',
-  };
-  const rsvpHash = '#rsvp=' + encodeURIComponent(btoa(JSON.stringify(rsvpData)));
-  const rsvpLink = base + rsvpHash;
-
-  // Generate QR using free qrserver.com API (no key required)
-  const qrWrap = document.getElementById('qr-container');
-  const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&margin=10&color=E8E4DC&bgcolor=1F1F23&data=' + encodeURIComponent(rsvpLink);
-  qrWrap.innerHTML = '<img src="' + qrApiUrl + '" width="120" height="120" style="border-radius:8px;border:2px solid rgba(232,228,220,0.2);display:block" alt="RSVP QR Code" onerror="this.parentNode.innerHTML='<div style=\"width:120px;height:120px;background:var(--bg3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);text-align:center;padding:10px\">QR needs internet connection</div>'">';
-
-  renderRSVP();
-  renderMenuOptions();
-}
-
-function copyInviteLink() {
-  const ev = state.event;
-  const base = window.location.href.split('#')[0];
-  const rsvpData = { n: ev.name||'Event', t: ev.type||'', d: ev.date||'', tm: ev.time||'', v: ev.venue||'', m: state.menuOptions, u: window._currentUsername||'' };
-  const link = base + '#rsvp=' + encodeURIComponent(btoa(JSON.stringify(rsvpData)));
-  navigator.clipboard.writeText(link).then(() => toast('RSVP link copied! Share it with guests.', '📋'))
-    .catch(() => { prompt('Copy this RSVP link:', link); });
-}
-
-function formatTime(t) {
-  if (!t) return 'TBD';
-  const [h, m] = t.split(':').map(Number);
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  return `${h % 12 || 12}:${m.toString().padStart(2,'0')} ${ampm}`;
-}
-
-function renderRSVP() {
-  const tbody = document.getElementById('rsvp-tbody');
-  if (!tbody) return;
-  if (!state.guests.length) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px">No guests yet</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = state.guests.map(g => `
-    <tr>
-      <td><strong style="color:var(--cream)">${g.name}</strong></td>
-      <td><span class="badge badge-${g.rsvp}">${cap(g.rsvp)}</span></td>
-      <td>${g.menu ? `<span class="menu-choice menu-${menuClass(g.menu)}">${g.menu}</span>` : '<span style="color:var(--muted)">—</span>'}</td>
-      <td>${g.checkedIn ? '<span style="color:var(--success);font-weight:600">✓ In</span>' : '<span style="color:var(--muted)">—</span>'}</td>
-    </tr>
-  `).join('');
-
-  // Menu breakdown
-  const breakdown = {};
-  state.guests.forEach(g => { if (g.menu) breakdown[g.menu] = (breakdown[g.menu]||0)+1; });
-  const bd = document.getElementById('menu-breakdown');
-  if (!bd) return;
-  if (!Object.keys(breakdown).length) { bd.innerHTML = '<p style="color:var(--muted);font-size:13px">No menu choices recorded.</p>'; return; }
-  bd.innerHTML = Object.entries(breakdown).map(([k,v]) => `
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
-      <span style="font-size:13px; color:var(--text)">${k}</span>
-      <div style="display:flex; align-items:center; gap:10px">
-        <div style="width:100px; background:var(--bg3); border-radius:99px; height:6px">
-          <div style="width:${Math.round(v/state.guests.length*100)}%; height:100%; background:var(--teal); border-radius:99px"></div>
-        </div>
-        <strong style="color:var(--teal); min-width:20px; text-align:right">${v}</strong>
-      </div>
-    </div>
-  `).join('');
-}
-
-function renderMenuOptions() {
-  const container = document.getElementById('menu-options-list');
-  if (!container) return;
-  container.innerHTML = state.menuOptions.map((opt,i) => `
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px">
-      <span class="menu-choice menu-${menuClass(opt)}" style="flex:1; text-align:left; padding:6px 12px">${opt}</span>
-      <button class="del-btn" onclick="removeMenuOption(${i})">✕</button>
-    </div>
-  `).join('');
-
-  // Update guest modal select
-  const sel = document.getElementById('g-menu');
-  const cur = sel?.value;
-  if (sel) {
-    sel.innerHTML = `<option value="">— Select —</option>` + state.menuOptions.map(o => `<option ${o===cur?'selected':''}>${o}</option>`).join('');
-  }
-}
-
-function addMenuOption() {
-  const val = document.getElementById('new-menu-option').value.trim();
-  if (!val) return;
-  state.menuOptions.push(val);
-  document.getElementById('new-menu-option').value = '';
-  save(); renderMenuOptions();
-}
-
-function removeMenuOption(i) {
-  state.menuOptions.splice(i, 1);
-  save(); renderMenuOptions();
-}
-
-// ===================== VENDORS =====================
-function addVendor() {
-  const name = document.getElementById('v-name').value.trim();
-  if (!name) { toast('Vendor name required','⚠️'); return; }
-  state.vendors.push({
-    id: Date.now(),
-    name, category: document.getElementById('v-cat').value,
-    contact: document.getElementById('v-contact').value,
-    phone: document.getElementById('v-phone').value,
-    cost: parseFloat(document.getElementById('v-cost').value) || 0,
-    payment: document.getElementById('v-pay').value,
-    notes: document.getElementById('v-notes').value,
-  });
-  save(); closeModal('modal-add-vendor');
-  ['v-name','v-contact','v-phone','v-cost','v-notes'].forEach(id => document.getElementById(id).value='');
-  renderVendors(); updateBadges(); renderDashboard();
-  toast('Vendor added!', '🤝');
-}
-
-function deleteVendor(id) {
-  state.vendors = state.vendors.filter(v => v.id !== id);
-  save(); renderVendors(); updateBadges(); renderDashboard();
-}
-
-function renderVendors() {
-  const grid = document.getElementById('vendors-grid');
-  if (!state.vendors.length) {
-    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">🤝</div><h4>No vendors yet</h4><p>Add caterers, photographers, florists and more</p></div>`;
-    return;
-  }
-  const dotColor = { paid:'var(--success)', partial:'var(--accent)', unpaid:'var(--danger)' };
-  grid.innerHTML = state.vendors.map(v => `
-    <div class="vendor-card">
-      <span class="vendor-status-dot" style="background:${dotColor[v.payment]}"></span>
-      <div class="vc-category">${v.category}</div>
-      <div class="vc-name">${v.name}</div>
-      <div class="vc-contact">${v.contact}${v.phone ? ' · '+v.phone:''}</div>
-      <div class="vc-cost">$${v.cost.toLocaleString()}</div>
-      ${v.notes ? `<div style="font-size:11px;color:var(--muted);margin-top:6px">${v.notes}</div>`:''}
-      <div class="vc-actions">
-        <span class="badge badge-${v.payment}">${cap(v.payment)}</span>
-        <button class="del-btn" onclick="deleteVendor(${v.id})" title="Remove" style="margin-left:auto">✕</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-// ===================== BUDGET =====================
-function addCategory() {
-  const name = document.getElementById('c-name').value.trim();
-  const limit = parseFloat(document.getElementById('c-limit').value) || 0;
-  if (!name) return;
-  state.categories.push({ id: Date.now(), name, limit });
-  save(); closeModal('modal-add-category');
-  document.getElementById('c-name').value = ''; document.getElementById('c-limit').value = '';
-  renderBudget(); populateExpenseCats();
-  toast('Category added!', '📊');
-}
-
-function addExpense() {
-  const desc = document.getElementById('e-desc').value.trim();
-  const amount = parseFloat(document.getElementById('e-amount').value) || 0;
-  if (!desc) return;
-  state.expenses.push({
-    id: Date.now(),
-    desc, category: document.getElementById('e-cat').value,
-    amount, status: document.getElementById('e-status').value,
-  });
-  save(); closeModal('modal-add-expense');
-  document.getElementById('e-desc').value = ''; document.getElementById('e-amount').value = '';
-  renderBudget(); renderDashboard();
-  toast('Expense added!', '💸');
-}
-
-function deleteExpense(id) {
-  state.expenses = state.expenses.filter(e => e.id !== id);
-  save(); renderBudget(); renderDashboard();
-}
-
-function populateExpenseCats() {
-  const sel = document.getElementById('e-cat');
-  sel.innerHTML = state.categories.map(c => `<option>${c.name}</option>`).join('') || '<option>General</option>';
-}
-
-function renderBudget() {
-  const total = state.event.budget || 0;
-  const spent = state.expenses.reduce((a,e) => a + e.amount, 0);
-  const remaining = total - spent;
-  const pct = total ? Math.round(spent/total*100) : 0;
-  const unpaid = state.expenses.filter(e => e.status !== 'paid').length;
-
-  document.getElementById('b-total').textContent = '$' + total.toLocaleString();
-  document.getElementById('b-total-sub').textContent = 'Set in Events';
-  document.getElementById('b-spent').textContent = '$' + spent.toLocaleString();
-  document.getElementById('b-spent-pct').textContent = pct + '% used';
-  document.getElementById('b-remaining').textContent = '$' + Math.max(0, remaining).toLocaleString();
-  document.getElementById('b-remaining-sub').textContent = `${unpaid} unpaid expenses`;
-  document.getElementById('b-remaining').style.color = remaining < 0 ? 'var(--danger)' : 'var(--success)';
-
-  // Categories
-  const catEl = document.getElementById('category-budgets');
-  if (!state.categories.length) {
-    catEl.innerHTML = '<p style="color:var(--muted);font-size:13px">No categories. Add one to track spending.</p>';
-  } else {
-    catEl.innerHTML = state.categories.map(c => {
-      const catSpent = state.expenses.filter(e => e.category === c.name).reduce((a,e)=>a+e.amount,0);
-      const catPct = c.limit ? Math.min(100, Math.round(catSpent/c.limit*100)) : 0;
-      const over = catSpent > c.limit && c.limit > 0;
-      return `
-        <div class="cat-budget-item">
-          <div class="cat-budget-header">
-            <span class="cat-budget-name">${c.name}</span>
-            <span class="cat-budget-nums" style="color:${over?'var(--danger)':'var(--muted)'}">
-              $${catSpent.toLocaleString()} / $${c.limit.toLocaleString()}${over?' ⚠️':''}
-            </span>
-          </div>
-          <div class="progress-bar-wrap">
-            <div class="progress-bar" style="width:${catPct}%; background:${over?'var(--danger)':catPct>80?'var(--gold)':'var(--success)'}"></div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  // Expenses table
-  const tbody = document.getElementById('expenses-tbody');
-  if (!state.expenses.length) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:28px">No expenses yet</td></tr>`;
-  } else {
-    tbody.innerHTML = state.expenses.map(e => `
-      <tr>
-        <td>${e.desc}</td>
-        <td style="color:var(--muted)">${e.category || 'General'}</td>
-        <td><strong style="color:var(--cream)">$${e.amount.toLocaleString()}</strong></td>
-        <td><span class="badge badge-${e.status}">${cap(e.status)}</span></td>
-        <td><button class="del-btn" onclick="deleteExpense(${e.id})">✕</button></td>
-      </tr>
-    `).join('');
-  }
-
-  populateExpenseCats();
-}
-
-// ===================== TASKS =====================
-let taskFilter = 'all';
-function setTaskFilter(f, el) {
-  taskFilter = f;
-  document.querySelectorAll('#page-tasks .filter-chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
-  renderTasks();
-}
-
-function addTask() {
-  const name = document.getElementById('t-name').value.trim();
-  if (!name) return;
-  state.tasks.push({
-    id: Date.now(),
-    name, assignee: document.getElementById('t-assignee').value,
-    due: document.getElementById('t-due').value,
-    status: document.getElementById('t-status').value,
-  });
-  save(); closeModal('modal-add-task');
-  document.getElementById('t-name').value=''; document.getElementById('t-assignee').value=''; document.getElementById('t-due').value='';
-  renderTasks(); updateBadges(); renderDashboard();
-  toast('Task added!', '✅');
-}
-
-function toggleTaskStatus(id) {
-  const t = state.tasks.find(t=>t.id===id);
-  if (!t) return;
-  const cycle = { todo:'inprog', inprog:'done', done:'todo' };
-  t.status = cycle[t.status];
-  save(); renderTasks(); updateBadges(); renderDashboard();
-}
-
-function deleteTask(id) {
-  state.tasks = state.tasks.filter(t=>t.id!==id);
-  save(); renderTasks(); updateBadges(); renderDashboard();
-}
-
-function renderTasks() {
-  const buckets = { todo:[], inprog:[], done:[] };
-  state.tasks.forEach(t => { if(buckets[t.status]) buckets[t.status].push(t); });
-
-  const renderBucket = (tasks) => {
-    if (!tasks.length) return `<div style="color:var(--muted);font-size:13px;text-align:center;padding:16px">Empty</div>`;
-    return tasks.map(t => `
-      <div class="task-item">
-        <div class="task-checkbox ${t.status==='done'?'checked':''}" onclick="toggleTaskStatus(${t.id})">
-          ${t.status==='done'?'✓':''}
-        </div>
-        <div class="task-name ${t.status==='done'?'done':''}">${t.name}</div>
-        ${t.assignee ? `<span class="task-assignee">${t.assignee}</span>` : ''}
-        ${t.due ? `<span class="task-due">${new Date(t.due+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>` : ''}
-        <button class="del-btn" onclick="deleteTask(${t.id})">✕</button>
-      </div>
-    `).join('');
-  };
-
-  document.getElementById('tasks-todo').innerHTML = renderBucket(buckets.todo);
-  document.getElementById('tasks-inprog').innerHTML = renderBucket(buckets.inprog);
-  document.getElementById('tasks-done').innerHTML = renderBucket(buckets.done);
-
-  const done = state.tasks.filter(t=>t.status==='done').length;
-  const total = state.tasks.length;
-  const pct = total ? Math.round(done/total*100) : 0;
-  document.getElementById('task-pct').textContent = pct + '%';
-  document.getElementById('task-progress-bar').style.width = pct + '%';
-}
-
-// ===================== DASHBOARD =====================
-function renderDashboard() {
-  const total = state.guests.length;
-  const confirmed = state.guests.filter(g=>g.rsvp==='confirmed').length;
-  const declined = state.guests.filter(g=>g.rsvp==='declined').length;
-  const pending = total - confirmed - declined;
-  document.getElementById('dash-guests').textContent = total;
-  document.getElementById('dash-confirmed').textContent = confirmed + ' confirmed';
-
-  const spent = state.expenses.reduce((a,e)=>a+e.amount,0);
-  const bud = state.event.budget || 0;
-  document.getElementById('dash-budget').textContent = '$'+spent.toLocaleString();
-  document.getElementById('dash-budget-sub').textContent = 'of $'+bud.toLocaleString()+' total';
-
-  const done = state.tasks.filter(t=>t.status==='done').length;
-  const taskTotal = state.tasks.length;
-  const taskPct = taskTotal ? Math.round(done/taskTotal*100) : 0;
-  document.getElementById('dash-tasks').textContent = done+'/'+taskTotal;
-  document.getElementById('dash-tasks-sub').textContent = taskPct+'% complete';
-
-  const vConf = state.vendors.filter(v=>v.payment==='paid').length;
-  document.getElementById('dash-vendors').textContent = state.vendors.length;
-  document.getElementById('dash-vendors-sub').textContent = vConf + ' paid';
-
-  // RSVP donut
-  const circumference = 264;
-  const confPct = total ? confirmed/total : 0;
-  const decPct = total ? declined/total : 0;
-  const confOffset = circumference - (confPct * circumference);
-  const decOffset = circumference - (decPct * circumference);
-  document.getElementById('donut-confirmed').setAttribute('stroke-dashoffset', confOffset);
-  document.getElementById('donut-declined').setAttribute('stroke-dashoffset', decOffset);
-  document.getElementById('rsvp-confirmed-n').textContent = confirmed;
-  document.getElementById('rsvp-pending-n').textContent = pending;
-  document.getElementById('rsvp-declined-n').textContent = declined;
-
-  // Budget snapshot
-  const snap = document.getElementById('budget-snapshot');
-  if (bud > 0) {
-    const pct = Math.round(spent/bud*100);
-    snap.innerHTML = `
-      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-        <span style="font-size:13px;color:var(--muted)">$${spent.toLocaleString()} of $${bud.toLocaleString()}</span>
-        <span style="font-size:13px;color:var(--gold);font-weight:600">${pct}%</span>
-      </div>
-      <div class="progress-bar-wrap">
-        <div class="progress-bar" style="width:${Math.min(100,pct)}%;background:${pct>90?'var(--danger)':pct>70?'var(--gold)':'var(--success)'}"></div>
-      </div>
-      <div style="margin-top:10px;font-size:12px;color:var(--muted)">$${Math.max(0,bud-spent).toLocaleString()} remaining</div>
-    `;
-  } else {
-    snap.innerHTML = '<p style="color:var(--muted);font-size:13px">Set a budget in Events & Themes.</p>';
-  }
-
-  // Timeline from tasks
-  const upcoming = state.tasks.filter(t=>t.due && t.status!=='done').sort((a,b)=>a.due.localeCompare(b.due)).slice(0,5);
-  const tl = document.getElementById('dashboard-timeline');
-  if (!upcoming.length) {
-    tl.innerHTML = `<div class="empty-state"><div class="es-icon">📅</div><h4>No upcoming tasks</h4><p>Add tasks with due dates</p></div>`;
-  } else {
-    tl.innerHTML = upcoming.map(t => `
-      <div class="tl-item">
-        <div class="tl-dot">${t.status==='inprog'?'⏳':'📌'}</div>
-        <div class="tl-content">
-          <div class="tl-title">${t.name}</div>
-          <div class="tl-desc">${t.assignee ? 'Assigned to: '+t.assignee : ''}</div>
-          <div class="tl-date">${new Date(t.due+'T12:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</div>
-        </div>
-        <span class="badge badge-${t.status==='todo'?'todo':'inprog'}">${t.status==='todo'?'To Do':'In Progress'}</span>
-      </div>
-    `).join('');
-  }
-}
-
-function updateBadges() {
-  document.getElementById('guest-count-badge').textContent = state.guests.length;
-  const pending = state.tasks.filter(t=>t.status!=='done').length;
-  document.getElementById('task-count-badge').textContent = pending;
-}
-
-// ===================== UTILS =====================
-function cap(s) { return s ? s.charAt(0).toUpperCase()+s.slice(1) : ''; }
-
-// ===================== AUTH SYSTEM =====================
+// ===== GLOBAL STATE =====
 let currentUser = null;
-let regAvatarData = null;
-let regStep = 1;
+let allUsers = [];
+let avatarData = null;
+let currentRegStep = 1;
+let allEvents = [];
+let allInvitees = [];
+let allRsvps = [];
 
-function getUsers() { return JSON.parse(localStorage.getItem('ss_users') || '{}'); }
-function saveUsers(u) { localStorage.setItem('ss_users', JSON.stringify(u)); }
-function getUserState(username) {
-  return JSON.parse(localStorage.getItem('ss_state_' + username) || 'null');
-}
-function saveUserState(username, s) {
-  localStorage.setItem('ss_state_' + username, JSON.stringify(s));
-}
+// ===== CLOUD DATABASE (Supabase Alternative - Using JSON storage) =====
+const DB = {
+  async init() {
+    await this.loadAllData();
+  },
+  async saveUser(user) {
+    const users = JSON.parse(localStorage.getItem('ss_users') || '[]');
+    const idx = users.findIndex(u => u.username === user.username);
+    if (idx >= 0) users[idx] = user;
+    else users.push(user);
+    localStorage.setItem('ss_users', JSON.stringify(users));
+    allUsers = users;
+    return user;
+  },
+  async getUser(username) {
+    const users = JSON.parse(localStorage.getItem('ss_users') || '[]');
+    return users.find(u => u.username === username);
+  },
+  async saveInvitee(invitee) {
+    const invitees = JSON.parse(localStorage.getItem('ss_invitees') || '[]');
+    const idx = invitees.findIndex(i => i.id === invitee.id);
+    if (idx >= 0) invitees[idx] = invitee;
+    else invitees.push(invitee);
+    localStorage.setItem('ss_invitees', JSON.stringify(invitees));
+    allInvitees = invitees;
+    return invitee;
+  },
+  async saveRsvp(rsvp) {
+    const rsvps = JSON.parse(localStorage.getItem('ss_rsvps') || '[]');
+    const idx = rsvps.findIndex(r => r.id === rsvp.id);
+    if (idx >= 0) rsvps[idx] = rsvp;
+    else rsvps.push(rsvp);
+    localStorage.setItem('ss_rsvps', JSON.stringify(rsvps));
+    allRsvps = rsvps;
+    return rsvp;
+  },
+  async loadAllData() {
+    allUsers = JSON.parse(localStorage.getItem('ss_users') || '[]');
+    allInvitees = JSON.parse(localStorage.getItem('ss_invitees') || '[]');
+    allRsvps = JSON.parse(localStorage.getItem('ss_rsvps') || '[]');
+  }
+};
 
+// ===== AUTHENTICATION =====
 function switchAuthTab(tab) {
-  document.querySelectorAll('.auth-tab').forEach((t,i) => {
-    t.classList.toggle('active', (tab==='login' && i===0)||(tab==='register' && i===1));
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
+  
+  event.target.classList.add('active');
+  document.getElementById('auth-' + tab).classList.add('active');
+  
+  if (tab === 'login') {
+    loadUserPills();
+  }
+}
+
+function loadUserPills() {
+  const container = document.getElementById('user-pills');
+  container.innerHTML = '';
+  allUsers.forEach(user => {
+    const pill = document.createElement('div');
+    pill.className = 'user-pill';
+    const avatar = user.avatar ? `<div class="user-pill-avatar" style="background-image: url('${user.avatar}')"></div>` : `<div class="user-pill-avatar">👤</div>`;
+    pill.innerHTML = avatar + `<div>${user.preferred_name}</div>`;
+    pill.onclick = () => {
+      document.getElementById('login-username').value = user.username;
+      document.querySelectorAll('.user-pill').forEach(p => p.classList.remove('selected'));
+      pill.classList.add('selected');
+    };
+    container.appendChild(pill);
   });
-  document.getElementById('auth-login').classList.toggle('active', tab==='login');
-  document.getElementById('auth-register').classList.toggle('active', tab==='register');
-  if (tab==='register') { regStep=1; showRegStep(1); }
-}
-
-function renderUserPills() {
-  const users = getUsers();
-  const wrap = document.getElementById('user-pills');
-  const keys = Object.keys(users);
-  if (!keys.length) { wrap.innerHTML=''; return; }
-  wrap.innerHTML = keys.map(u => {
-    const usr = users[u];
-    const av = usr.avatar ? `<img src="${usr.avatar}">` : '👤';
-    return `<div class="user-pill" onclick="selectUserPill('${u}', this)">
-      <div class="user-pill-avatar">${av}</div>
-      ${usr.preferredName || usr.firstName}
-    </div>`;
-  }).join('');
-}
-
-function selectUserPill(username, el) {
-  document.querySelectorAll('.user-pill').forEach(p=>p.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('login-username').value = username;
-  document.getElementById('lp0').focus();
-}
-
-function getPasscode(prefix) {
-  return ['0','1','2','3'].map(i => document.getElementById(prefix+i).value).join('');
 }
 
 function doLogin() {
-  const username = document.getElementById('login-username').value.trim().toLowerCase();
-  const passcode = getPasscode('lp');
-  const errEl = document.getElementById('login-error');
-  errEl.classList.remove('show');
-
-  if (!username) { errEl.textContent = 'Please enter your username.'; errEl.classList.add('show'); return; }
-  if (passcode.length < 4) { errEl.textContent = 'Please enter all 4 digits of your passcode.'; errEl.classList.add('show'); return; }
-
-  // Try local first, then cloud
-  const users = getUsers();
-  if (!users[username]) {
-    errEl.textContent = 'Username not found. Check spelling or create an account.';
-    errEl.classList.add('show');
+  const username = document.getElementById('login-username').value.trim();
+  const passcode = [0, 1, 2, 3].map(i => document.getElementById('lp' + i).value).join('');
+  const errorEl = document.getElementById('login-error');
+  
+  if (!username || passcode.length !== 4) {
+    errorEl.classList.add('show');
     return;
   }
-  if (users[username].passcode !== passcode) {
-    errEl.textContent = 'Incorrect passcode. Please try again.';
-    errEl.classList.add('show');
-    // Shake the passcode inputs
-    document.getElementById('login-passcode-wrap').style.animation = 'shake 0.4s ease';
-    setTimeout(() => { document.getElementById('login-passcode-wrap').style.animation = ''; }, 400);
-    ['lp0','lp1','lp2','lp3'].forEach(id => { document.getElementById(id).value = ''; });
-    document.getElementById('lp0').focus();
-    return;
-  }
-
-  errEl.classList.remove('show');
-  localStorage.setItem('ss_last_user', username);
-  currentUser = users[username];
-  loadUserSession(username);
-}
-
-function loadUserSession(username) {
-  const users = getUsers();
-  currentUser = users[username];
-
-  // Load or initialise this user's event state
-  const saved = getUserState(username);
-  if (saved) {
-    state = saved;
+  
+  const user = allUsers.find(u => u.username === username && u.passcode === passcode);
+  if (user) {
+    currentUser = user;
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    document.getElementById('auth-overlay').style.display = 'none';
+    showToast('✓ Welcome back, ' + user.preferred_name);
   } else {
-    state = {
-      event:{name:'',type:'Wedding',date:'',time:'18:00',venue:'',budget:0,theme:'elegant'},
-      guests:[], vendors:[], tasks:[], expenses:[], categories:[], menuOptions:['Chicken','Vegetarian','Vegan','Fish']
-    };
-    saveUserState(username, state);
+    errorEl.classList.add('show');
   }
-
-  // Override global save to scope to user
-  window._currentUsername = username;
-
-  // Hide overlay
-  document.getElementById('auth-overlay').style.display = 'none';
-
-  // Personalise UI
-  personaliseUI();
-
-  // Initialise app
-  appInit();
 }
 
-function personaliseUI() {
-  const u = currentUser;
-  const preferred = u.preferredName || u.firstName;
-  const av = u.avatar ? `<img src="${u.avatar}">` : '👤';
-
-  // Sidebar user widget
-  const widget = document.getElementById('sidebar-user-widget');
-  widget.style.display = 'flex';
-  document.getElementById('sidebar-avatar').innerHTML = av;
-  document.getElementById('sidebar-preferred-name').textContent = preferred;
-  document.getElementById('sidebar-username-handle').textContent = '@' + u.username;
-
-  // Topbar greeting
-  document.getElementById('topbar-greeting').textContent = 'Hello, ' + preferred + ' ✦';
-
-  // Welcome banner (injected into dashboard)
-  const age = u.birthday ? calcAge(u.birthday) : null;
-  const city = u.city || '';
-  const joined = u.joined ? new Date(u.joined).toLocaleDateString('en-US',{month:'long',year:'numeric'}) : '';
-  const timeGreet = getTimeGreeting();
-
-  document.getElementById('welcome-banner').innerHTML = `
-    <div class="welcome-avatar">${av}</div>
-    <div class="welcome-text">
-      <h3>${timeGreet}, ${preferred}!</h3>
-      <p>${u.occupation ? u.occupation + ' · ' : ''}${city}</p>
-    </div>
-    <div class="welcome-meta">
-      ${age ? `<div class="wm-city">🎂 ${age} years old</div>` : ''}
-      <div class="wm-member">Member since ${joined}</div>
-    </div>
-  `;
-
-  // Profile modal
-  const profileAv = document.getElementById('profile-avatar-lg');
-  profileAv.innerHTML = av;
-  const details = [
-    ['Full Name', u.firstName + ' ' + u.lastName],
-    ['Preferred Name', u.preferredName || '—'],
-    ['Username', '@' + u.username],
-    ['Email', u.email || '—'],
-    ['Birthday', u.birthday ? new Date(u.birthday+'T12:00').toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric'}) : '—'],
-    ['Age', age ? age + ' years old' : '—'],
-    ['City of Origin', u.city || '—'],
-    ['Phone', u.phone || '—'],
-    ['Occupation', u.occupation || '—'],
-    ['Member Since', joined],
-  ];
-  document.getElementById('profile-details').innerHTML = details.map(([k,v]) =>
-    `<div class="profile-detail-row"><span>${k}</span><span>${v}</span></div>`
-  ).join('');
+// ===== REGISTRATION FLOW =====
+function regNext(step) {
+  if (validateRegStep(step)) {
+    document.getElementById('reg-step-' + step).style.display = 'none';
+    document.getElementById('reg-step-' + (step + 1)).style.display = 'block';
+    document.getElementById('rs' + (step - 1)).classList.add('done');
+    document.getElementById('rs' + step).classList.add('active');
+    currentRegStep = step + 1;
+  }
 }
 
-function calcAge(dob) {
-  const today = new Date();
-  const birth = new Date(dob);
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-  return age;
+function regBack(step) {
+  document.getElementById('reg-step-' + step).style.display = 'none';
+  document.getElementById('reg-step-' + (step - 1)).style.display = 'block';
+  document.getElementById('rs' + (step - 1)).classList.remove('active');
+  document.getElementById('rs' + (step - 2)).classList.remove('done');
+  document.getElementById('rs' + (step - 2)).classList.add('active');
+  currentRegStep = step - 1;
 }
 
-function getTimeGreeting() {
-  const h = new Date().getHours();
-  if (h < 12) return 'Good morning';
-  if (h < 17) return 'Good afternoon';
-  return 'Good evening';
-}
-
-function doLogout() {
-  currentUser = null;
-  window._currentUsername = null;
-  closeModal('modal-profile');
-  // Reset app state to defaults
-  state = { event:{name:'',type:'Wedding',date:'',time:'18:00',venue:'',budget:0,theme:'elegant'}, guests:[], vendors:[], tasks:[], expenses:[], categories:[], menuOptions:['Chicken','Vegetarian','Vegan','Fish'] };
-  // Show auth screen
-  document.getElementById('auth-overlay').style.display = 'flex';
-  document.getElementById('sidebar-user-widget').style.display = 'none';
-  // Clear login fields
-  ['lp0','lp1','lp2','lp3'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
-  document.getElementById('login-username').value = '';
-  document.getElementById('login-error').classList.remove('show');
-  // Refresh pills
-  renderUserPills();
-  switchAuthTab('login');
-}
-
-// User-scoped save — robust with try/catch
-function save() {
-  if (!window._currentUsername) return;
-  try {
-    saveUserState(window._currentUsername, state);
-    cloudSaveState(window._currentUsername, state);
-  } catch(e) {
-    if (e.name === 'QuotaExceededError') {
-      toast('Storage almost full. Consider clearing old data.', '⚠️');
+function validateRegStep(step) {
+  const errorEl = document.getElementById('reg-error-' + step);
+  errorEl.classList.remove('show');
+  
+  if (step === 1) {
+    const fname = document.getElementById('reg-firstname').value.trim();
+    const lname = document.getElementById('reg-lastname').value.trim();
+    const pname = document.getElementById('reg-preferred').value.trim();
+    
+    if (!fname || !lname || !pname) {
+      errorEl.textContent = 'Please fill in all name fields.';
+      errorEl.classList.add('show');
+      return false;
+    }
+  } else if (step === 2) {
+    const username = document.getElementById('reg-username').value.trim();
+    const passcode = [0, 1, 2, 3].map(i => document.getElementById('rp' + i).value).join('');
+    const email = document.getElementById('reg-email').value.trim();
+    
+    if (!username || /\s/.test(username)) {
+      errorEl.textContent = 'Username must be unique and have no spaces.';
+      errorEl.classList.add('show');
+      return false;
+    }
+    if (allUsers.find(u => u.username === username)) {
+      errorEl.textContent = 'Username already taken.';
+      errorEl.classList.add('show');
+      return false;
+    }
+    if (passcode.length !== 4 || !/^\d+$/.test(passcode)) {
+      errorEl.textContent = 'Passcode must be 4 digits.';
+      errorEl.classList.add('show');
+      return false;
+    }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errorEl.textContent = 'Valid email required.';
+      errorEl.classList.add('show');
+      return false;
     }
   }
+  return true;
 }
 
-// ===== REGISTRATION =====
-function handleAvatarUpload(input) {
-  const file = input.files[0];
-  if (!file) return;
-  // Compress to max 200x200, JPEG quality 0.7 to keep localStorage usage low
-  const reader = new FileReader();
-  reader.onload = e => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      const maxSize = 200;
-      let w = img.width, h = img.height;
-      if (w > h) { if (w > maxSize) { h = h * maxSize / w; w = maxSize; } }
-      else { if (h > maxSize) { w = w * maxSize / h; h = maxSize; } }
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      regAvatarData = canvas.toDataURL('image/jpeg', 0.7);
-      document.getElementById('reg-avatar-preview').innerHTML = '<img src="' + regAvatarData + '">';
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function showRegStep(n) {
-  regStep = n;
-  [1,2,3].forEach(i => {
-    document.getElementById('reg-step-'+i).style.display = i===n ? 'block' : 'none';
-    const stepEl = document.getElementById('rs'+(i-1));
-    if (i < n) { stepEl.classList.add('done'); stepEl.classList.remove('active'); }
-    else if (i === n) { stepEl.classList.add('active'); stepEl.classList.remove('done'); }
-    else { stepEl.classList.remove('active','done'); }
-  });
-}
-
-function regNext(step) {
-  if (step === 1) {
-    const fn = document.getElementById('reg-firstname').value.trim();
-    const pn = document.getElementById('reg-preferred').value.trim();
-    const err = document.getElementById('reg-error-1');
-    if (!fn) { err.textContent='Please enter your first name.'; err.classList.add('show'); return; }
-    if (!pn) { err.textContent='Please enter your preferred name.'; err.classList.add('show'); return; }
-    err.classList.remove('show');
-    showRegStep(2);
-  } else if (step === 2) {
-    const un = document.getElementById('reg-username').value.trim().toLowerCase().replace(/\s+/g,'_');
-    const pc = getPasscode('rp');
-    const err = document.getElementById('reg-error-2');
-    const users = getUsers();
-    if (!un) { err.textContent='Please choose a username.'; err.classList.add('show'); return; }
-    if (users[un]) { err.textContent='That username is taken. Try another.'; err.classList.add('show'); return; }
-    if (pc.length < 4 || !/^\d{4}$/.test(pc)) { err.textContent='Please enter a 4-digit passcode.'; err.classList.add('show'); return; }
-    err.classList.remove('show');
-    showRegStep(3);
-  }
-}
-
-function regBack(step) { showRegStep(step - 1); }
-
-function completeRegistration() {
-  const err = document.getElementById('reg-error-3');
-  err.classList.remove('show');
-  const un = document.getElementById('reg-username').value.trim().toLowerCase().replace(/\s+/g,'_');
-  if (!un) { err.textContent = 'Username is missing. Go back to Step 2.'; err.classList.add('show'); return; }
-
-  const newUser = {
-    username: un,
-    passcode: getPasscode('rp'),
-    firstName: document.getElementById('reg-firstname').value.trim(),
-    lastName: document.getElementById('reg-lastname').value.trim(),
-    preferredName: document.getElementById('reg-preferred').value.trim(),
+async function completeRegistration() {
+  if (!validateRegStep(3)) return;
+  
+  const user = {
+    id: 'user_' + Date.now(),
+    username: document.getElementById('reg-username').value.trim(),
+    passcode: [0, 1, 2, 3].map(i => document.getElementById('rp' + i).value).join(''),
+    first_name: document.getElementById('reg-firstname').value.trim(),
+    last_name: document.getElementById('reg-lastname').value.trim(),
+    preferred_name: document.getElementById('reg-preferred').value.trim(),
     email: document.getElementById('reg-email').value.trim(),
     birthday: document.getElementById('reg-birthday').value,
     city: document.getElementById('reg-city').value.trim(),
     phone: document.getElementById('reg-phone').value.trim(),
     occupation: document.getElementById('reg-occupation').value.trim(),
     source: document.getElementById('reg-source').value,
-    avatar: regAvatarData || null,
-    joined: new Date().toISOString().split('T')[0],
+    avatar: avatarData,
+    created_at: new Date().toISOString()
   };
+  
+  await DB.saveUser(user);
+  currentUser = user;
+  localStorage.setItem('currentUser', JSON.stringify(user));
+  document.getElementById('auth-overlay').style.display = 'none';
+  showToast('✓ Account created successfully!');
+  resetRegistrationForm();
+}
 
-  try {
-    const users = getUsers();
-    if (users[un]) { err.textContent = 'That username is already taken.'; err.classList.add('show'); return; }
-    users[un] = newUser;
-    saveUsers(users);
-    localStorage.setItem('ss_last_user', un);
-    // Sync to cloud if configured
-    cloudSaveUser(newUser);
-    toast('Account created! Welcome, ' + newUser.preferredName + '! 🎉', '✦');
-    currentUser = newUser;
-    loadUserSession(un);
-  } catch(e) {
-    if (e.name === 'QuotaExceededError' || (e.message && e.message.includes('quota'))) {
-      // Try without avatar
-      newUser.avatar = null;
-      try {
-        const users = getUsers();
-        users[un] = newUser;
-        saveUsers(users);
-        localStorage.setItem('ss_last_user', un);
-        cloudSaveUser(newUser);
-        toast('Account created (profile photo skipped due to storage limit). Welcome, ' + newUser.preferredName + '!', '✦');
-        currentUser = newUser;
-        loadUserSession(un);
-      } catch(e2) {
-        err.textContent = 'Storage full. Please clear browser data and try again.';
-        err.classList.add('show');
-      }
-    } else {
-      err.textContent = 'Sign-up failed: ' + (e.message || 'Unknown error. Please try again.');
-      err.classList.add('show');
-      console.error('Registration error:', e);
-    }
+function resetRegistrationForm() {
+  document.getElementById('reg-step-1').style.display = 'block';
+  document.getElementById('reg-step-2').style.display = 'none';
+  document.getElementById('reg-step-3').style.display = 'none';
+  document.getElementById('reg-avatar-preview').textContent = '👤';
+  document.getElementById('reg-avatar-preview').style.backgroundImage = 'none';
+  document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="date"], select').forEach(el => el.value = '');
+  document.querySelectorAll('.passcode-digit').forEach(el => el.value = '');
+  document.querySelectorAll('.reg-step').forEach((el, i) => {
+    el.classList.remove('active', 'done');
+    if (i === 0) el.classList.add('active');
+  });
+  avatarData = null;
+  currentRegStep = 1;
+}
+
+function handleAvatarUpload(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      avatarData = e.target.result;
+      document.getElementById('reg-avatar-preview').style.backgroundImage = `url(${avatarData})`;
+      document.getElementById('reg-avatar-preview').textContent = '';
+    };
+    reader.readAsDataURL(input.files[0]);
   }
 }
 
-// Setup passcode digit auto-advance
-function setupPasscodeInputs(prefix) {
-  [0,1,2,3].forEach(i => {
-    const el = document.getElementById(prefix+i);
-    if (!el) return;
-    el.addEventListener('input', () => {
-      if (el.value.length === 1 && i < 3) document.getElementById(prefix+(i+1)).focus();
+// ===== PASSCODE INPUT HANDLING =====
+document.addEventListener('DOMContentLoaded', function() {
+  setupPasscodeInputs('login-passcode-wrap');
+  DB.init().then(() => loadUserPills());
+  
+  // Setup reg passcodes after Step 2 loads
+  setTimeout(() => setupPasscodeInputs('reg-step-2'), 100);
+});
+
+function setupPasscodeInputs(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  const inputs = container.querySelectorAll('.passcode-digit');
+  inputs.forEach((input, idx) => {
+    input.addEventListener('input', (e) => {
+      if (e.target.value) {
+        if (idx < inputs.length - 1) {
+          inputs[idx + 1].focus();
+        }
+      }
     });
-    el.addEventListener('keydown', e => {
-      if (e.key === 'Backspace' && !el.value && i > 0) document.getElementById(prefix+(i-1)).focus();
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+        inputs[idx - 1].focus();
+      }
     });
   });
 }
 
-
-// ===================== CLOUD DATABASE (Firebase Realtime DB) =====================
-// HOW TO ENABLE CLOUD SYNC:
-// 1. Go to https://console.firebase.google.com → Create project (free Spark plan)
-// 2. Go to Realtime Database → Create database → Start in test mode
-// 3. Copy your database URL (e.g. https://my-project-default-rtdb.firebaseio.com)
-// 4. Paste it below replacing the empty string
-const FIREBASE_URL = localStorage.getItem('ss_firebase_url') || '';
-
-function cloudSaveUser(user) {
-  if (!FIREBASE_URL) return;
-  const safe = Object.assign({}, user, { avatar: null }); // don't send avatar to cloud
-  fetch(FIREBASE_URL + '/ss_users/' + user.username + '.json', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(safe)
-  }).catch(() => {}); // silent fail — local storage still works
+// ===== QR CODE GENERATION =====
+function generateQRCode(data, containerId = 'qr-container') {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  container.innerHTML = '';
+  new QRCode(container, {
+    text: data,
+    width: 200,
+    height: 200,
+    colorDark: '#E8E4DC',
+    colorLight: '#111113',
+    correctLevel: QRCode.CorrectLevel.H
+  });
 }
 
-function cloudSaveState(username, s) {
-  if (!FIREBASE_URL) return;
-  fetch(FIREBASE_URL + '/ss_states/' + username + '.json', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(s)
-  }).catch(() => {});
+// ===== INVITEE MANAGEMENT =====
+async function addInvitee(eventId, guestData) {
+  const invitee = {
+    id: 'inv_' + Date.now(),
+    event_id: eventId,
+    name: guestData.name,
+    email: guestData.email,
+    phone: guestData.phone,
+    status: 'pending',
+    invited_at: new Date().toISOString(),
+    invite_code: generateInviteCode(),
+    rsvp_link: window.location.origin + '?rsvp=' + generateInviteCode()
+  };
+  
+  await DB.saveInvitee(invitee);
+  generateQRCode(invitee.rsvp_link);
+  return invitee;
 }
 
-function cloudSaveInvitee(eventOwner, invitee) {
-  if (!FIREBASE_URL) return;
-  fetch(FIREBASE_URL + '/ss_invitees/' + eventOwner + '/' + Date.now() + '.json', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(invitee)
-  }).catch(() => {});
+// ===== RSVP MANAGEMENT =====
+async function updateRsvp(inviteeId, status, notes = '') {
+  const rsvp = {
+    id: 'rsvp_' + inviteeId,
+    invitee_id: inviteeId,
+    status: status, // accepted, declined, pending
+    notes: notes,
+    responded_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
+  
+  await DB.saveRsvp(rsvp);
+  await updateInviteeStatus(inviteeId, status);
+  return rsvp;
 }
 
-async function cloudSyncLogin(username) {
-  if (!FIREBASE_URL) return null;
-  try {
-    const res = await fetch(FIREBASE_URL + '/ss_users/' + username + '.json');
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data;
-  } catch(e) { return null; }
-}
-
-function setupFirebase() {
-  const url = prompt('Paste your Firebase Realtime Database URL:\n(e.g. https://your-project-rtdb.firebaseio.com)\n\nLeave blank to use local storage only.', FIREBASE_URL || '');
-  if (url === null) return;
-  localStorage.setItem('ss_firebase_url', url.trim());
-  location.reload();
-}
-
-// ===================== INIT =====================
-function appInit() {
-  updateSidebarEvent();
-  renderDashboard();
-  updateBadges();
-  renderMenuOptions();
-  populateExpenseCats();
-}
-
-function init() {
-  // Check for RSVP hash — guest scanned QR code
-  if (window.location.hash && window.location.hash.startsWith('#rsvp=')) {
-    try {
-      const encoded = decodeURIComponent(window.location.hash.replace('#rsvp=', ''));
-      const rsvpData = JSON.parse(atob(encoded));
-      showGuestRsvpForm(rsvpData);
-      return; // Don't show login screen for guests
-    } catch(e) { /* bad hash, proceed normally */ }
-  }
-
-  // Setup passcode digit auto-advance
-  setupPasscodeInputs('lp');
-  setupPasscodeInputs('rp');
-
-  // Render user pills for quick login
-  renderUserPills();
-
-  // Pre-fill last logged in user
-  const lastUser = localStorage.getItem('ss_last_user');
-  if (lastUser) {
-    const users = getUsers();
-    if (users[lastUser]) {
-      document.getElementById('login-username').value = lastUser;
-      // Highlight the matching pill
-      setTimeout(() => {
-        const pills = document.querySelectorAll('.user-pill');
-        pills.forEach(p => { if (p.textContent.trim() === (users[lastUser].preferredName || users[lastUser].firstName)) p.classList.add('selected'); });
-      }, 50);
-    }
+async function updateInviteeStatus(inviteeId, status) {
+  const invitee = allInvitees.find(i => i.id === inviteeId);
+  if (invitee) {
+    invitee.status = status;
+    await DB.saveInvitee(invitee);
   }
 }
 
-function showGuestRsvpForm(data) {
-  // Hide auth, show a standalone RSVP form for the scanned guest
-  document.getElementById('auth-overlay').style.display = 'none';
-  document.body.style.overflow = 'auto';
-  const menuOpts = data.m || ['Chicken','Vegetarian','Vegan'];
-  const dateStr = data.d ? new Date(data.d+'T12:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}) : 'TBD';
-  const timeStr = data.tm ? formatTime(data.tm) : 'TBD';
-  const div = document.createElement('div');
-  div.style.cssText = 'position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;z-index:99999;overflow-y:auto';
-  div.innerHTML = `
-    <div style="max-width:480px;width:100%;background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden">
-      <div style="background:linear-gradient(135deg,#1F1F23,#252529);padding:28px 28px 20px;text-align:center;border-bottom:1px solid var(--border)">
-        <div style="font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:8px">SS Event Studio · RSVP</div>
-        <h2 style="font-family:'Playfair Display',serif;font-size:26px;color:var(--cream);margin-bottom:4px">${data.n || 'You're Invited'}</h2>
-        <p style="font-size:13px;color:var(--muted)">${data.t ? data.t + ' Celebration' : 'You are cordially invited'}</p>
-        <div style="display:flex;justify-content:center;gap:24px;margin-top:18px">
-          <div style="text-align:center">
-            <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)">Date</div>
-            <div style="font-size:13px;color:var(--cream);margin-top:2px">${dateStr}</div>
-          </div>
-          <div style="text-align:center">
-            <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)">Time</div>
-            <div style="font-size:13px;color:var(--cream);margin-top:2px">${timeStr}</div>
-          </div>
-          ${data.v ? `<div style="text-align:center"><div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)">Venue</div><div style="font-size:13px;color:var(--cream);margin-top:2px">${data.v}</div></div>` : ''}
-        </div>
-      </div>
-      <div style="padding:24px 28px" id="rsvp-form-body">
-        <div style="margin-bottom:14px">
-          <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:5px;font-weight:600">Your Full Name</label>
-          <input id="rsvp-guest-name" type="text" placeholder="e.g. Sipho Dlamini" style="width:100%;background:var(--bg3);border:1px solid rgba(232,228,220,0.08);border-radius:8px;padding:10px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none">
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:5px;font-weight:600">Email Address</label>
-          <input id="rsvp-guest-email" type="email" placeholder="your@email.com" style="width:100%;background:var(--bg3);border:1px solid rgba(232,228,220,0.08);border-radius:8px;padding:10px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none">
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:5px;font-weight:600">Will you attend?</label>
-          <div style="display:flex;gap:10px">
-            <button onclick="setRsvpResponse('confirmed',this)" style="flex:1;padding:10px;background:rgba(110,168,130,0.12);border:1px solid rgba(110,168,130,0.3);border-radius:8px;color:#6EA882;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;transition:0.2s" data-rsvp="confirmed">✓ Yes, I'll be there</button>
-            <button onclick="setRsvpResponse('declined',this)" style="flex:1;padding:10px;background:rgba(184,92,92,0.1);border:1px solid rgba(184,92,92,0.25);border-radius:8px;color:#B85C5C;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;transition:0.2s" data-rsvp="declined">✗ Can't make it</button>
-          </div>
-        </div>
-        <div style="margin-bottom:20px" id="rsvp-menu-wrap">
-          <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:8px;font-weight:600">Menu Choice</label>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            ${menuOpts.map(m => `<button onclick="setMenuChoice('${m}',this)" style="padding:7px 14px;background:var(--bg3);border:1px solid rgba(232,228,220,0.08);border-radius:99px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;transition:0.2s" data-menu="${m}">${m}</button>`).join('')}
-          </div>
-        </div>
-        <div id="rsvp-submit-error" style="display:none;background:rgba(184,92,92,0.12);border:1px solid rgba(184,92,92,0.25);border-radius:8px;padding:9px 13px;font-size:12px;color:#B85C5C;margin-bottom:12px"></div>
-        <button onclick="submitGuestRsvp('${data.u||''}')" style="width:100%;padding:13px;background:var(--cream);color:var(--bg);border:none;border-radius:8px;font-family:'Playfair Display',serif;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s">Submit RSVP ✦</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(div);
-  window._rsvpResponse = null;
-  window._rsvpMenu = null;
+// ===== UTILITIES =====
+function generateInviteCode() {
+  return Math.random().toString(36).substring(2, 10).toUpperCase();
 }
 
-function setRsvpResponse(val, btn) {
-  window._rsvpResponse = val;
-  document.querySelectorAll('[data-rsvp]').forEach(b => b.style.opacity = '0.5');
-  btn.style.opacity = '1';
-  btn.style.fontWeight = '700';
-}
-
-function setMenuChoice(val, btn) {
-  window._rsvpMenu = val;
-  document.querySelectorAll('[data-menu]').forEach(b => { b.style.background='var(--bg3)'; b.style.color='var(--muted)'; b.style.borderColor='rgba(232,228,220,0.08)'; });
-  btn.style.background = 'rgba(232,228,220,0.12)';
-  btn.style.color = 'var(--cream)';
-  btn.style.borderColor = 'rgba(232,228,220,0.3)';
-}
-
-function submitGuestRsvp(eventOwner) {
-  const name = document.getElementById('rsvp-guest-name').value.trim();
-  const email = document.getElementById('rsvp-guest-email').value.trim();
-  const errEl = document.getElementById('rsvp-submit-error');
-  if (!name) { errEl.textContent='Please enter your name.'; errEl.style.display='block'; return; }
-  if (!window._rsvpResponse) { errEl.textContent='Please select whether you will attend.'; errEl.style.display='block'; return; }
-  errEl.style.display = 'none';
-
-  const invitee = { name, email, rsvp: window._rsvpResponse, menu: window._rsvpMenu || '', submittedAt: new Date().toISOString(), checkedIn: false };
-
-  // Save to local guests list for the event owner
-  if (eventOwner) {
-    try {
-      const key = 'ss_state_' + eventOwner;
-      const ownerState = JSON.parse(localStorage.getItem(key) || 'null');
-      if (ownerState) {
-        ownerState.guests = ownerState.guests || [];
-        const exists = ownerState.guests.find(g => g.email && g.email === email);
-        if (exists) {
-          exists.rsvp = invitee.rsvp;
-          exists.menu = invitee.menu;
-        } else {
-          ownerState.guests.push({ id: Date.now(), ...invitee });
-        }
-        localStorage.setItem(key, JSON.stringify(ownerState));
-      }
-    } catch(e) {}
-    // Push to cloud invitees DB
-    cloudSaveInvitee(eventOwner, invitee);
-  }
-
-  // Show success
-  document.getElementById('rsvp-form-body').innerHTML = `
-    <div style="text-align:center;padding:20px 0">
-      <div style="font-size:52px;margin-bottom:16px">${invitee.rsvp === 'confirmed' ? '🎉' : '💌'}</div>
-      <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--cream);margin-bottom:8px">${invitee.rsvp === 'confirmed' ? "See you there!" : "Thank you for letting us know"}</h3>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6">
-        ${invitee.rsvp === 'confirmed'
-          ? 'Your RSVP has been received. We can't wait to celebrate with you, <strong style="color:var(--cream)">' + name + '</strong>!'
-          : 'Your response has been recorded. You will be missed, <strong style="color:var(--cream)">' + name + '</strong>.'}
-      </p>
-      ${invitee.menu ? `<div style="margin-top:14px;padding:10px 18px;background:var(--bg3);border-radius:8px;display:inline-block;font-size:12px;color:var(--muted)">Menu: <strong style="color:var(--cream)">${invitee.menu}</strong></div>` : ''}
-    </div>
-  `;
-  // Clear the RSVP hash from URL
-  history.replaceState(null, '', window.location.href.split('#')[0]);
-}
-
-init();
-
-function selectUmemulo() {
-  state.event.theme = 'umemulo';
-  save();
-  closeModal('modal-umemulo');
-  navigate('events', document.querySelectorAll('.nav-item')[1]);
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  
   setTimeout(() => {
-    renderThemes();
-    toast('Umemulo Special selected. Bayede! 🙌', '✦');
-  }, 100);
+    toast.remove();
+  }, 3000);
+}
+
+function logout() {
+  currentUser = null;
+  localStorage.removeItem('currentUser');
+  document.getElementById('auth-overlay').style.display = 'flex';
+  showToast('Logged out');
 }
 </script>
-
-<!-- ===== UMEMULO CULTURAL STORY MODAL ===== -->
-<div class="modal-overlay" id="modal-umemulo">
-  <div class="modal" style="max-width:600px; padding:0; overflow:hidden; border-color:rgba(196,140,60,0.35)">
-    <div style="height:200px; overflow:hidden; position:relative">
-      <img src="https://images.unsplash.com/photo-1580746738099-b2d00b39cee5?w=800&h=320&fit=crop&auto=format"
-        style="width:100%;height:100%;object-fit:cover;display:block"
-        onerror="this.style.background='linear-gradient(135deg,#2C1A0E,#8B3A1A,#C48C3C)';this.style.display='block'">
-      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(14,8,2,0.9) 0%,rgba(0,0,0,0.2) 60%)"></div>
-      <div style="position:absolute;bottom:0;left:0;right:0;padding:22px 28px">
-        <div style="font-size:10px;text-transform:uppercase;letter-spacing:2.5px;color:rgba(255,255,255,0.6);margin-bottom:4px">Zulu Heritage ✦ Curated Theme</div>
-        <div style="font-family:'Playfair Display',serif;font-size:26px;color:#F5EDD8;line-height:1.2">Umemulo Special</div>
-        <div style="font-size:12px;color:rgba(245,237,216,0.65);margin-top:4px;font-style:italic">"The ceremony that turns a girl into a woman"</div>
-      </div>
-    </div>
-    <div style="padding:28px 30px 24px; overflow-y:auto; max-height:480px">
-
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
-        <div style="flex:1;height:1px;background:rgba(196,140,60,0.2)"></div>
-        <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#C48C3C;font-weight:600">The Story</span>
-        <div style="flex:1;height:1px;background:rgba(196,140,60,0.2)"></div>
-      </div>
-
-      <p style="font-size:14px;line-height:1.85;color:var(--text);margin-bottom:18px">
-        <strong style="color:#E8D5A3;font-family:'Playfair Display',serif">Umemulo</strong> is one of the most sacred rites of passage in Zulu culture — a ceremony that publicly celebrates a young woman's transition from girlhood (intombi) into full womanhood. Rooted in centuries of tradition, it is not merely a party but a profound spiritual and communal act of recognition, gratitude, and blessing.
-      </p>
-
-      <p style="font-size:14px;line-height:1.85;color:var(--text);margin-bottom:18px">
-        Traditionally, the ceremony is held when a young woman reaches her early twenties or when her family determines she is ready. The homestead comes alive with the sound of <em style="color:#E8D5A3">izigqi</em> — rhythmic chanting and drumming — as women from the community gather to ululate and sing praise songs honouring the young woman's spirit. The air carries the scent of burning imphepho, the sacred incense used to call upon the ancestors, for <strong style="color:#E8D5A3;font-family:'Playfair Display',serif">no Zulu celebration is complete without the presence of the amadlozi</strong> — the ancestral spirits who watch over the living.
-      </p>
-
-      <div style="background:rgba(196,140,60,0.08);border-left:3px solid #C48C3C;border-radius:0 8px 8px 0;padding:14px 18px;margin:20px 0">
-        <div style="font-family:'Playfair Display',serif;font-size:15px;color:#E8D5A3;font-style:italic;line-height:1.6">
-          "Bayede, Nkosi yamakhosi — Hail to the queen of queens."
-        </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:6px">Traditional Zulu praise — spoken as the young woman is presented to her community</div>
-      </div>
-
-      <p style="font-size:14px;line-height:1.85;color:var(--text);margin-bottom:18px">
-        The young woman adorns herself in layers of intricate <strong style="color:#E8D5A3">Zulu beadwork</strong> — each colour carrying meaning. Red speaks of love and strong emotion; white honours purity and the ancestors; green speaks of new life; yellow of wealth and fertility. She wears the <em style="color:#E8D5A3">isidwaba</em>, a dark leather skirt, and her body is anointed with red ochre (<em style="color:#E8D5A3">ibomvu</em>) and white clay (<em style="color:#E8D5A3">isishamu</em>), marking her as consecrated — set apart and seen.
-      </p>
-
-      <p style="font-size:14px;line-height:1.85;color:var(--text);margin-bottom:18px">
-        A beast — most often a goat or cow — is slaughtered in her honour. This is not taken lightly. The animal's blood feeds the earth and speaks to the ancestors on her behalf: <strong style="color:#E8D5A3;font-family:'Playfair Display',serif">"This daughter is seen. This daughter is honoured. This daughter is ready."</strong> She then presents <em style="color:#E8D5A3">utshwala</em> — traditional sorghum beer — to the elders seated in reverence, bowing in humility before those who have walked longer on this earth.
-      </p>
-
-      <div style="display:flex;align-items:center;gap:8px;margin:22px 0 18px">
-        <div style="flex:1;height:1px;background:rgba(196,140,60,0.2)"></div>
-        <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#C48C3C;font-weight:600">The Palette</span>
-        <div style="flex:1;height:1px;background:rgba(196,140,60,0.2)"></div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px">
-        <div style="text-align:center">
-          <div style="width:100%;height:44px;border-radius:8px;background:#C48C3C;margin-bottom:5px"></div>
-          <div style="font-size:10px;color:var(--muted)">Ochre</div>
-        </div>
-        <div style="text-align:center">
-          <div style="width:100%;height:44px;border-radius:8px;background:#8B3A1A;margin-bottom:5px"></div>
-          <div style="font-size:10px;color:var(--muted)">Ibomvu</div>
-        </div>
-        <div style="text-align:center">
-          <div style="width:100%;height:44px;border-radius:8px;background:#E8D5A3;margin-bottom:5px"></div>
-          <div style="font-size:10px;color:var(--muted)">Isishamu</div>
-        </div>
-        <div style="text-align:center">
-          <div style="width:100%;height:44px;border-radius:8px;background:#2C1A0E;margin-bottom:5px"></div>
-          <div style="font-size:10px;color:var(--muted)">Isidwaba</div>
-        </div>
-        <div style="text-align:center">
-          <div style="width:100%;height:44px;border-radius:8px;background:#F5EDD8;border:1px solid rgba(255,255,255,0.1);margin-bottom:5px"></div>
-          <div style="font-size:10px;color:var(--muted)">Ivory</div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:8px;margin:22px 0 18px">
-        <div style="flex:1;height:1px;background:rgba(196,140,60,0.2)"></div>
-        <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#C48C3C;font-weight:600">Theme Touches</span>
-        <div style="flex:1;height:1px;background:rgba(196,140,60,0.2)"></div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px">
-        <div style="background:rgba(196,140,60,0.07);border:1px solid rgba(196,140,60,0.15);border-radius:10px;padding:13px">
-          <div style="font-size:18px;margin-bottom:6px">📿</div>
-          <div style="font-size:12px;font-weight:600;color:#E8D5A3;margin-bottom:3px">Beaded Invitations</div>
-          <div style="font-size:11px;color:var(--muted);line-height:1.5">Zulu beadwork-inspired borders and colour codes woven into your digital invite</div>
-        </div>
-        <div style="background:rgba(196,140,60,0.07);border:1px solid rgba(196,140,60,0.15);border-radius:10px;padding:13px">
-          <div style="font-size:18px;margin-bottom:6px">🪘</div>
-          <div style="font-size:12px;font-weight:600;color:#E8D5A3;margin-bottom:3px">Ancestral Warmth</div>
-          <div style="font-size:11px;color:var(--muted);line-height:1.5">Earth tones, firelight ochre & ivory — a palette that honours lineage</div>
-        </div>
-        <div style="background:rgba(196,140,60,0.07);border:1px solid rgba(196,140,60,0.15);border-radius:10px;padding:13px">
-          <div style="font-size:18px;margin-bottom:6px">🐂</div>
-          <div style="font-size:12px;font-weight:600;color:#E8D5A3;margin-bottom:3px">Isigodi Setting</div>
-          <div style="font-size:11px;color:var(--muted);line-height:1.5">Homestead-inspired layout — communal, grounded, deeply intentional</div>
-        </div>
-        <div style="background:rgba(196,140,60,0.07);border:1px solid rgba(196,140,60,0.15);border-radius:10px;padding:13px">
-          <div style="font-size:18px;margin-bottom:6px">🌾</div>
-          <div style="font-size:12px;font-weight:600;color:#E8D5A3;margin-bottom:3px">Utshwala Menu</div>
-          <div style="font-size:11px;color:var(--muted);line-height:1.5">Traditional menu suggestions: samp, amadumbe, umngqusho & more</div>
-        </div>
-      </div>
-
-      <p style="font-size:12px;color:var(--muted);line-height:1.7;font-style:italic;text-align:center;border-top:1px solid var(--border);padding-top:16px">
-        This theme is curated with deep respect for Zulu heritage and the women whose ceremonies have carried this tradition for generations. <strong style="color:#C48C3C">Bayede.</strong>
-      </p>
-
-      <div style="display:flex;gap:10px;margin-top:18px">
-        <button class="btn btn-ghost" style="flex:1" onclick="closeModal('modal-umemulo')">Close</button>
-        <button class="btn" style="flex:1;background:#C48C3C;color:#1A0D00;font-weight:700" onclick="selectUmemulo()">Use This Theme ✦</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
